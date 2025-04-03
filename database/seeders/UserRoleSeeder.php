@@ -13,13 +13,14 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Lấy vai trò Admin
-        $adminRole = Role::where('name', 'Admin')->first();
+        // Lấy vai trò Super Admin
+        $superAdminRole = Role::where('name', 'Super Admin')->first();
+        // $adminRole = Role::where('name', 'Admin')->first();
         
         // Gán vai trò Admin cho người dùng test
-        $user = User::where('email', 'test@example.com')->first();
-        if ($user && $adminRole) {
-            $user->roles()->attach($adminRole->id);
+        $user = User::where('email', 'admin@gmail.com')->first();
+        if ($user && $superAdminRole) {
+            $user->roles()->attach($superAdminRole->id);
         }
     }
 } 
