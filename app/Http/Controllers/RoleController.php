@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\Permission;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Services\RoleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,6 +15,12 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
+    protected $roleService;
+    public function __construct(RoleService $roleService)
+    {
+        $this->roleService = $roleService;
+    }
+
     public function index()
     {
         try {
@@ -25,7 +32,7 @@ class RoleController extends Controller
             // Bỏ qua lỗi và tiếp tục
         }
 
-        $roles = Role::all();
+        $roles = $this->roleService->getAllRoles();
         return view('roles.index', compact('roles'));
     }
 
@@ -53,7 +60,7 @@ class RoleController extends Controller
     public function store(StoreRoleRequest $request)
     {
         // Dữ liệu đã được xác thực trong StoreRoleRequest
-        
+
         // Tạo vai trò mới
         $role = Role::create([
             'name' => $request->name,
@@ -102,7 +109,7 @@ class RoleController extends Controller
         $role = Role::findOrFail($id);
         $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('id')->toArray();
-        
+
         return view('roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
@@ -112,7 +119,7 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, string $id)
     {
         // Dữ liệu đã được xác thực trong UpdateRoleRequest
-        
+
         $role = Role::findOrFail($id);
 
         // Cập nhật thông tin vai trò
@@ -142,13 +149,13 @@ class RoleController extends Controller
         }
 
         $role = Role::findOrFail($id);
-        
+
         // Kiểm tra nếu vai trò có liên kết với người dùng
-        if($role->users()->count() > 0) {
+        if ($role->users()->count() > 0) {
             return redirect()->route('roles.index')
                 ->with('error', 'Không thể xóa vai trò này vì đang được gán cho người dùng');
         }
-        
+
         // Xóa quyền liên kết với vai trò
         $role->permissions()->detach();
         // Xóa vai trò
