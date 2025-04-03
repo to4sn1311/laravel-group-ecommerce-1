@@ -47,7 +47,7 @@
                                             {{ __('Sửa') }}
                                         </a>
                                         @endif
-                                        
+
                                         @if(Auth::user()->hasPermission('user-delete'))
                                         <form method="POST" action="{{ route('users.destroy', $user->id) }}" class="inline" onsubmit="return confirm('Bạn có chắc muốn xóa người dùng này?');">
                                             @csrf
@@ -67,4 +67,4 @@
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>

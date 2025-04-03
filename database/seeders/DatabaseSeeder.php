@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
+            ProductSeeder::class,
         ]);
 
         // User::factory(10)->create();
@@ -27,7 +28,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'password' => Hash::make('password'),
         ]);
-        
+
         // Gán vai trò cho người dùng đã tạo
         $this->call([
             UserRoleSeeder::class,
