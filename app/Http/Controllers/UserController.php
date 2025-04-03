@@ -22,15 +22,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        try {
-            // Kiểm tra quyền xem danh sách người dùng
-            if (method_exists(Auth::user(), 'hasPermission') && !Auth::user()->hasPermission('user-list')) {
-                return redirect()->route('dashboard')->with('error', 'Bạn không có quyền xem danh sách người dùng');
-            }
-        } catch (\Exception $e) {
-            // Bỏ qua lỗi và tiếp tục
-        }
-
         $users = $this->userService->getAllUsers();
         return view('users.index', compact('users'));
     }
@@ -40,15 +31,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        try {
-            // Kiểm tra quyền tạo người dùng
-            if (method_exists(Auth::user(), 'hasPermission') && !Auth::user()->hasPermission('user-create')) {
-                return redirect()->route('users.index')->with('error', 'Bạn không có quyền tạo người dùng mới');
-            }
-        } catch (\Exception $e) {
-            // Bỏ qua lỗi và tiếp tục
-        }
-
         $roles = $this->userService->getAllRoles();
         $roles = $roles->filter(function($roles){
             return $roles->name !== 'Super Admin';
@@ -80,14 +62,6 @@ class UserController extends Controller
     public function show(string $id)
     {
         try {
-            if (method_exists(Auth::user(), 'hasPermission') && !Auth::user()->hasPermission('user-list')) {
-                return redirect()->route('users.index')->with('error', 'Bạn không có quyền xem thông tin người dùng');
-            }
-        } catch (\Exception $e) {
-            // Bỏ qua lỗi và tiếp tục
-        }
-
-        try {
             $user = $this->userService->getUserById($id);
             return view('users.show', compact('user'));
         } catch (\Exception $e) {
@@ -101,14 +75,6 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        try {
-            if (method_exists(Auth::user(), 'hasPermission') && !Auth::user()->hasPermission('user-edit')) {
-                return redirect()->route('users.index')->with('error', 'Bạn không có quyền chỉnh sửa người dùng');
-            }
-        } catch (\Exception $e) {
-            // Bỏ qua lỗi và tiếp tục
-        }
-
         try {
             $user = $this->userService->getUserById($id);
             $roles = $this->userService->getAllRoles();
@@ -142,14 +108,6 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            if (method_exists(Auth::user(), 'hasPermission') && !Auth::user()->hasPermission('user-delete')) {
-                return redirect()->route('users.index')->with('error', 'Bạn không có quyền xóa người dùng');
-            }
-        } catch (\Exception $e) {
-            // Bỏ qua lỗi và tiếp tục
-        }
-
         if (Auth::id() == $id) {
             return redirect()->route('users.index')->with('error', 'Bạn không thể xóa tài khoản của chính mình');
         }
