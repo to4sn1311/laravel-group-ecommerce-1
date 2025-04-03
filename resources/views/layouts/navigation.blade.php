@@ -36,13 +36,13 @@
                 @endif
                 
                 <!-- Permissions Management -->
-                @if(Auth::user()->hasPermission('permission-list'))
+                <!-- @if(Auth::user()->hasPermission('permission-list'))
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('permissions.*')">
                         {{ __('Permissions') }}
                     </x-nav-link>
                 </div>
-                @endif
+                @endif -->
                 
                 <!-- Categories Management -->
                 @if(Auth::user()->hasPermission('category-list'))

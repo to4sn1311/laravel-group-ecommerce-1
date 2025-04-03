@@ -37,4 +37,26 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:role-delete')->delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 });
 
+// Route cho các trang client
+// Route::prefix('client')->group(function () {
+//     Route::get('/', function () {
+//         return view('client.layout.app');
+//     })->name('client.home');
+    
+//     Route::get('/shop', function () {
+//         return view('client.shop-grid');
+//     })->name('client.shop');
+    
+//     Route::get('/blog', function () {
+//         return view('client.blog');
+//     })->name('client.blog');
+    
+//     Route::get('/contact', function () {
+//         return view('client.contact');
+//     })->name('client.contact');
+// });
+Route::get('/client', function(){
+    return view('client.index');
+});
+
 require __DIR__.'/auth.php';
