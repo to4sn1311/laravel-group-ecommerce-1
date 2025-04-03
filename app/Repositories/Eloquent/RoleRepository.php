@@ -4,9 +4,9 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Role;
 use App\Repositories\BaseRepository;
-use App\Repositories\BaseRepositoryInterface;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
 
-class RoleRepository extends BaseRepository implements BaseRepositoryInterface
+class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 {
     public function __construct(Role $model)
     {

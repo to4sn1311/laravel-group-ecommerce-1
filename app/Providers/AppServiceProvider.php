@@ -8,6 +8,8 @@ use App\Repositories\Eloquent\ProductRepository;
 use App\Repositories\Eloquent\RoleRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
+use App\Repositories\Eloquent\UserRepository;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         //
         $this->app->bind(BaseRepositoryInterface::class, BaseRepository::class);
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
     }
 
