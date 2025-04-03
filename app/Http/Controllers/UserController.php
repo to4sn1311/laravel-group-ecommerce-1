@@ -44,7 +44,6 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        // Dữ liệu đã được xác thực trong StoreUserRequest
         try {
             $this->userService->createUser($request->validated());
             return redirect()->route('users.index')
@@ -78,6 +77,9 @@ class UserController extends Controller
         try {
             $user = $this->userService->getUserById($id);
             $roles = $this->userService->getAllRoles();
+            $roles = $roles->filter(function($role){
+                return $role->name !== 'Super Admin';
+            });
             $userRoles = $user->roles->pluck('id')->toArray();
             
             return view('users.edit', compact('user', 'roles', 'userRoles'));
