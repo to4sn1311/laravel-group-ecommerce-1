@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,3 +40,23 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/categories',[CategoryController::class,'index'])
+    ->name('categories.index');
+
+Route::post('/categories',[CategoryController::class,'store'])
+->name('categories.store')
+->middleware('auth');
+Route::get('/categories/create',[CategoryController::class,'create'])
+    ->name('categories.create')
+    ->middleware('auth');
+//edit
+Route::get('/categories/{id}', [CategoryController::class, 'edit'])->name('categories.edit')->middleware('auth');
+Route::put('/categories/{id}',[CategoryController::class,'update'])
+->name('categories.update')
+->middleware('auth');
+
+//delete    
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy')
+->middleware('auth');
+
