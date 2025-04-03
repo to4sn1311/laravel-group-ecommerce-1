@@ -24,7 +24,6 @@ class RoleController extends Controller
     public function index()
     {
         try {
-            // Kiểm tra quyền xem danh sách vai trò
             if (method_exists(Auth::user(), 'hasPermission') && !Auth::user()->hasPermission('role-list')) {
                 return redirect()->route('dashboard')->with('error', 'Bạn không có quyền xem danh sách vai trò');
             }
@@ -33,6 +32,10 @@ class RoleController extends Controller
         }
 
         $roles = $this->roleService->getAllRoles();
+        $roles = $roles->filter(function($role) {
+            return $role->name !== 'Super Admin';
+        });
+        
         return view('roles.index', compact('roles'));
     }
 
