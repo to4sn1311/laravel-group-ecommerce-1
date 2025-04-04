@@ -38,9 +38,6 @@
                                         <tr class="border-b border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                                             <td class="py-3 px-4 text-gray-900 dark:text-gray-100">{{ $category->name }}</td>
                                             <td class="py-3 px-4 flex justify-center space-x-2">
-                                                <a href="{{ route('categories.show', $category->id) }}" class="text-blue-500 hover:text-blue-700 mr-2">
-                                                    {{ __('Xem') }}
-                                                </a>
                                                 @if(Auth::user()->hasPermission('category-edit'))
                                                 <a href="{{ route('categories.edit', $category->id) }}" 
                                                     class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition">
