@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
+//gom+permi
 Route::get('/categories',[CategoryController::class,'index'])
     ->name('categories.index');
 
@@ -60,3 +60,5 @@ Route::put('/categories/{id}',[CategoryController::class,'update'])
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy')
 ->middleware('auth');
 
+//show
+Route::get('/categories/{id}/show', [CategoryController::class, 'show'])->name('categories.show')->middleware('auth');

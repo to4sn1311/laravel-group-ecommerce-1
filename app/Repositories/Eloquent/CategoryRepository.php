@@ -32,7 +32,6 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function getAllParent(){
         return $this->model->whereNull('parent_id')->get();
     }
-
     /**
      * @param int $id
      * @return Category
