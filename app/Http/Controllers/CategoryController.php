@@ -5,10 +5,57 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
-
 class CategoryController extends Controller
-{
+{   
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+    public function index()
+    {
+        $categories = $this->categoryService->getAllCategories();
+        return view('categories.index',compact('categories'));
+    }
+    public function create()
+    {
+        $categories = $this->categoryService->getAllCategories();
+        $categories = $categories->filter(function($c){
+            return $c->parent_id == null;
+        });
+
+        return view('categories.create',[ 'categories' => $categories]);
+    }
+    public function store(CreateCategoryRequest $request){
+
+        $this->categoryService->createCategory($request->validated());
+
+        return redirect()->route('categories.index');
+    
+    }
+    public function edit($id)
+    {
+        $category = $this->categoryService->getCategoryById($id);
+        $categories = $this->categoryService->getAllCategories();
+        $categories = $categories->filter(function($roles){
+            return $roles->parent_id == null;
+        });
+        return view('categories.edit', compact('category','categories'));
+    }
+    public function update(UpdateCategoryRequest $request, $id)
+    {
+        $this->categoryService->updateCategory($id, $request->validated());
+        return redirect()->route('categories.index');
+    }
+    public function destroy($id)
+    {
+        $this->categoryService->deleteCategory($id);
+        return redirect()->route('categories.index');
+    }
+    /*
     protected $category;
     public function __construct(Category $category) {
         $this->category = $category;
@@ -45,6 +92,6 @@ class CategoryController extends Controller
     {
         Category::findOrFail($id)->delete();
         return redirect()->route('categories.index');
-    }
+    }*/
 
 }
