@@ -29,6 +29,9 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return $this->model->latest('id')->paginate(10);
     }
+    public function getAllParent(){
+        return $this->model->whereNull('parent_id')->get();
+    }
 
     /**
      * @param int $id

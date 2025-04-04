@@ -22,11 +22,12 @@ class CategoryController extends Controller
     }
     public function create()
     {
-        $categories = $this->categoryService->getAllCategories();
+        $categories = $this->categoryService->getAllParentCategories();
+        /*
         $categories = $categories->filter(function($c){
             return $c->parent_id == null;
         });
-
+*/
         return view('categories.create',[ 'categories' => $categories]);
     }
     public function store(CreateCategoryRequest $request){
@@ -39,10 +40,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = $this->categoryService->getCategoryById($id);
-        $categories = $this->categoryService->getAllCategories();
-        $categories = $categories->filter(function($roles){
-            return $roles->parent_id == null;
-        });
+        $categories = $this->categoryService->getAllParentCategories();
         return view('categories.edit', compact('category','categories'));
     }
     public function update(UpdateCategoryRequest $request, $id)

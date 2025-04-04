@@ -77,5 +77,9 @@ class CategoryService
         $this->categoryRepository->delete($id);
         return true;
     }
+    public function getAllParentCategories()
+    {
+        return $this->categoryRepository->getAllParent();
+    }
 
 }

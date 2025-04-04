@@ -8,7 +8,8 @@ interface CategoryRepositoryInterface
 {
 
     public function getAll();
-    
+    public function getAllParent();
+
   
     public function findById(int $id);
 
