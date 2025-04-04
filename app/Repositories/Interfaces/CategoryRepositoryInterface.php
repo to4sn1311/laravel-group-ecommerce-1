@@ -20,5 +20,7 @@ interface CategoryRepositoryInterface
     
 
     public function delete(int $id);
+
+    
     
 }

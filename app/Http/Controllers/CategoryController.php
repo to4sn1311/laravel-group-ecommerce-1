@@ -16,10 +16,23 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
     public function index()
-    {
+{
+    // Lấy danh mục cha, phân trang 5 cái
+    $categories = Category::whereNull('parent_id')->paginate(5);
+
+    // Lấy danh mục con của tất cả danh mục cha đã lấy
+    $categoryIds = $categories->pluck('id');
+    $children = Category::whereIn('parent_id', $categoryIds)->get()->groupBy('parent_id');
+
+    return view('categories.index', compact('categories', 'children'));
+}
+
+    /*
+    public function index()
+    {//trycatch
         $categories = $this->categoryService->getAllCategories();
         return view('categories.index',compact('categories'));
-    }
+    }*/
     public function create()
     {
         $categories = $this->categoryService->getAllParentCategories();
