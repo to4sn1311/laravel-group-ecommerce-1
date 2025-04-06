@@ -52,8 +52,16 @@ class CategoryController extends Controller
     }
     public function destroy($id)
     {
+        /*
         $this->categoryService->deleteCategory($id);
         return redirect()->route('categories.index');
+        */
+        try {
+            $this->categoryService->deleteCategory($id);
+            return response()->json(['message' => 'Danh mục đã được xóa thành công!']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Không thể xóa danh mục!'], 500);
+        }
     }
     public function show($id)
     {

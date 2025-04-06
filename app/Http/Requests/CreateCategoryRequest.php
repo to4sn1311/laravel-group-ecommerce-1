@@ -26,7 +26,7 @@ class CreateCategoryRequest extends FormRequest
 
         return [
              'name'=>'required|unique:categories',
-             'parent_id' => ['nullable', 'exists:categories,id', new CategoryMenuLevel()],
+             'parent_id' => ['nullable', new CategoryMenuLevel()],
             ];
     }
 }

@@ -15,17 +15,23 @@ class CategoryMenuLevel implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if ($value) { // Chỉ kiểm tra nếu có parent_id
-            $parentCategory = Category::find($value);
+         // Cho phép giá trị null (không có parent_id)
+         if ($value === 'null') {
+            return;
+        }
 
-            if (!$parentCategory) {
-                $fail('Danh mục cha không tồn tại.');
-                return;
-            }
+        // Kiểm tra nếu có parent_id
+        $parentCategory = Category::find($value);
 
-            if ($parentCategory->parent_id !== null) { // Nếu danh mục cha đã có parent_id, tức là cấp 2
-                $fail('Không thể thêm danh mục cấp 3.');
-            }
+        if ($parentCategory === null) {
+            // Nếu danh mục cha không tồn tại, trả lỗi
+            $fail('Danh mục cha không tồn tại.');
+            return;
+        }
+
+        // Kiểm tra nếu danh mục cha đã có parent_id (tức là cấp 2)
+        if ($parentCategory->parent_id !== null) {
+            $fail('Không thể thêm danh mục cấp 3.');
         }
     }
 }
