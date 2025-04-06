@@ -40,25 +40,21 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-//gom+permi
-Route::get('/categories',[CategoryController::class,'index'])
+
+Route::middleware('auth')->group(function () {
+    Route::middleware('permission:category-list')->get('/categories',[CategoryController::class,'index'])
     ->name('categories.index');
 
-Route::post('/categories',[CategoryController::class,'store'])
-->name('categories.store')
-->middleware('auth');
-Route::get('/categories/create',[CategoryController::class,'create'])
-    ->name('categories.create')
-    ->middleware('auth');
-//edit
-Route::get('/categories/{id}', [CategoryController::class, 'edit'])->name('categories.edit')->middleware('auth');
-Route::put('/categories/{id}',[CategoryController::class,'update'])
-->name('categories.update')
-->middleware('auth');
+Route::middleware('permission:category-create')->get('/categories/create',[CategoryController::class,'create'])
+    ->name('categories.create');
 
-//delete    
-Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy')
-->middleware('auth');
+Route::middleware('permission:role-create')->post('/categories',[CategoryController::class,'store'])
+->name('categories.store');
 
-//show
-Route::get('/categories/{id}/show', [CategoryController::class, 'show'])->name('categories.show')->middleware('auth');
+Route::middleware('permission:role-list')->get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+Route::middleware('permission:role-edit')->get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::middleware('permission:role-edit')->put('/categories/{id}',[CategoryController::class,'update'])
+->name('categories.update');
+Route::middleware('permission:role-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+});
