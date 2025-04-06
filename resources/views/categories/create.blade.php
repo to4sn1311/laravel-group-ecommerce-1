@@ -9,20 +9,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="POST" action="{{ route('categories.store') }}" class="space-y-6">
+                    <form id="category-form" method="POST" action="{{ route('categories.store') }}" class="space-y-6">
                         @csrf
 
                         <!-- Thông báo lỗi -->
-                        @if ($errors->any())
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <strong class="font-bold">Có lỗi xảy ra!</strong>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
+                        <div id="error-messages"></div>
 
                         <!-- Tên -->
                         <div>
@@ -31,7 +22,6 @@
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
-                  
                         <!-- Trường Danh Mục Cha -->
                         <div class="mb-4">
                             <label for="parent_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Danh mục cha</label>
@@ -42,7 +32,7 @@
                                 @endforeach
                             </select>
                         </div>
-            
+
                         <div class="flex items-center justify-end mt-4">
                             <a href="{{ route('categories.index') }}" class="text-gray-500 hover:text-gray-700 mr-4">
                                 {{ __('Hủy') }}
@@ -51,9 +41,40 @@
                                 {{ __('Thêm category') }}
                             </x-primary-button>
                         </div>
-                    </form>                    
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#category-form').submit(function(e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        // Nếu thành công, chuyển hướng về danh sách category
+                        window.location.href = '{{ route('categories.index') }}';
+                    },
+                    error: function(xhr) {
+                        // Xử lý lỗi (hiển thị lỗi trả về từ server)
+                        $('#error-messages').html('');
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(field, messages) {
+                                $('#error-messages').append('<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert"><strong class="font-bold">Có lỗi xảy ra!</strong><ul><li>' + messages[0] + '</li></ul></div>');
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

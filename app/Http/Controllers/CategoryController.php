@@ -32,13 +32,25 @@ class CategoryController extends Controller
 */
         return view('categories.create',[ 'categories' => $categories]);
     }
+    public function store(CreateCategoryRequest $request)
+{
+    // Thực hiện việc tạo category
+    $this->categoryService->createCategory($request->validated());
+
+    if ($request->wantsJson()) {
+        return response()->json(['message' => 'Category created successfully.'], 200);
+    }
+
+    return redirect()->route('categories.index');
+}
+    /*
     public function store(CreateCategoryRequest $request){
 
         $this->categoryService->createCategory($request->validated());
 
         return redirect()->route('categories.index');
     
-    }
+    }*/
     public function edit($id)
     {
         $category = $this->categoryService->getCategoryById($id);
@@ -48,8 +60,19 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, $id)
     {
         $this->categoryService->updateCategory($id, $request->validated());
+        // Kiểm tra nếu yêu cầu AJAX
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Category updated successfully.'], 200);
+        }
         return redirect()->route('categories.index');
     }
+
+    /*
+    public function update(UpdateCategoryRequest $request, $id)
+    {
+        $this->categoryService->updateCategory($id, $request->validated());
+        return redirect()->route('categories.index');
+    }*/
     public function destroy($id)
     {
         /*
