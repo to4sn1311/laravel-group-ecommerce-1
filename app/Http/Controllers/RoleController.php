@@ -21,7 +21,7 @@ class RoleController extends Controller
         $this->roleService = $roleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
             if (method_exists(Auth::user(), 'hasPermission') && !Auth::user()->hasPermission('role-list')) {
@@ -31,12 +31,11 @@ class RoleController extends Controller
             // Bỏ qua lỗi và tiếp tục
         }
 
-        $roles = $this->roleService->getAllRoles();
-        $roles = $roles->filter(function($role) {
-            return $role->name !== 'Super Admin';
-        });
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
         
-        return view('roles.index', compact('roles'));
+        $roles = $this->roleService->searchRoles($search, $perPage);
+        return view('roles.index', compact('roles', 'search'));
     }
 
     /**
