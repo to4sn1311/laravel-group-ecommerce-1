@@ -36,7 +36,7 @@
                 @endif
 
                 <!-- Permissions Management -->
-                @if(Auth::user()->hasPermission('permission-list'))
+                <!-- @if(Auth::user()->hasPermission('permission-list'))
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('permissions.*')">
                         {{ __('Permissions') }}
@@ -44,23 +44,25 @@
                 </div>
                 @endif
 
+                @endif -->
+
                 <!-- Categories Management -->
                 @if(Auth::user()->hasPermission('category-list'))
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('categories.*')">
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
                         {{ __('Categories') }}
                     </x-nav-link>
                 </div>
                 @endif
 
                 <!-- Products Management -->
-{{--                @if(Auth::user()->hasPermission('product-list'))--}}
+                {{-- @if(Auth::user()->hasPermission('product-list'))--}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
                         {{ __('Products') }}
                     </x-nav-link>
                 </div>
-{{--                @endif--}}
+                {{-- @endif--}}
             </div>
 
             <!-- Settings Dropdown -->
@@ -88,7 +90,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -165,7 +167,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

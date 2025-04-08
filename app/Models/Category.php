@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'name',
         'parent_id',
@@ -38,8 +40,4 @@ class Category extends Model
     /**
      * Get the products directly assigned to this category.
      */
-    public function directProducts()
-    {
-        return $this->hasMany(Product::class);
-    }
 }

@@ -29,6 +29,25 @@
                     </div>
                     @endif
 
+                    <div class="mb-6">
+                        <form action="{{ route('roles.index') }}" method="GET" class="flex items-center space-x-4">
+                            <div class="flex-1">
+                                <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('Tìm kiếm theo tên hoặc mô tả') }}" 
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black-900 dark:text-gray-100 bg-white dark:bg-gray-700">
+                            </div>
+                            <div>
+                                <select name="per_page" onchange="this.form.submit()" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black-900 dark:text-gray-100 bg-white dark:bg-gray-700">
+                                    <option value="10" class="bg-white dark:bg-gray-700" {{ request('per_page') == 10 ? 'selected' : '' }}>10 {{ __('mục/trang') }}</option>
+                                    <option value="25" class="bg-white dark:bg-gray-700" {{ request('per_page') == 25 ? 'selected' : '' }}>25 {{ __('mục/trang') }}</option>
+                                    <option value="50" class="bg-white dark:bg-gray-700" {{ request('per_page') == 50 ? 'selected' : '' }}>50 {{ __('mục/trang') }}</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                {{ __('Tìm kiếm') }}
+                            </button>
+                        </form>
+                    </div>
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white dark:bg-gray-700">
                             <thead>
@@ -76,6 +95,10 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="mt-4">
+                        {{ $roles->appends(request()->query())->links() }}
                     </div>
                 </div>
             </div>
