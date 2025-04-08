@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\Product;
 use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductRepository extends BaseRepository implements ProductRepositoryInterface
@@ -13,6 +14,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         parent::__construct($model);
     }
+
+    public function getAllWithCategories(): Collection
+    {
+        return $this->model->with('categories')->get();
+    }
+
     public function findByName(string $name)
     {
         return $this->model->where('name', $name)->first();

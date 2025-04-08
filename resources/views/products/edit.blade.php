@@ -1,55 +1,82 @@
 <x-app-layout>
-    <div class="container mx-auto px-4 py-8">
-        <!-- Page Heading -->
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Create New Blog</h2>
-            <a href="#"
-               class="px-4 py-2 bg-gray-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-gray-700 transition">
-                ← Back to Products
-            </a>
-        </div>
+    <!-- Modal Header -->
+    <div class="flex justify-between items-center mb-4">
+        <x-slot name="header">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Sửa sản phẩm') }}
+            </h2>
+        </x-slot>
+    </div>
 
-        <!-- Form Container -->
-        <div class="bg-white shadow-lg rounded-lg p-6 max-w-2xl mx-auto">
-            <form action="{{route('products.update', $product->id)}}" method="post" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <!-- Modal Body -->
+                    <form id="productForm">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" id="productId" name="id" value="{{ $product->id }}">
 
-                <!-- Thông báo lỗi -->
-                @if ($errors->any())
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <strong class="font-bold">Có lỗi xảy ra!</strong>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                <!-- Name Field -->
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Title:</label>
-                    <input type="text" id="name" name="name" value="{{$product->name}}"
-                           class="mt-1 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200"
-                           placeholder="Enter name">
+                        <!-- Tên sản phẩm -->
+                        <div class="w-full mb-4">
+                            <x-input-label for="name" :value="__('Tên:')" />
+                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
+                                value="{{ $product->name }}" required autofocus />
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" id="name_error" />
+                        </div>
+
+                        <!-- Giá -->
+                        <div class="mb-4">
+                            <x-input-label for="price" :value="__('Giá:')" />
+                            <x-text-input id="price" class="block mt-1 w-full no-spinner" type="number"
+                                name="price" value="{{ $product->price }}" required />
+                            <x-input-error :messages="$errors->get('price')" class="mt-2" id="price_error" />
+                        </div>
+
+                        <!-- Chi tiết -->
+                        <div class="mb-4">
+                            <x-input-label for="description" :value="__('Chi tiết:')" />
+                            <x-textarea id="description" class="block mt-1 w-full" rows="3"
+                                name="description" required value="{{$product->description}}" />
+                            <x-input-error :messages="$errors->get('description')" class="mt-2" id="description_error" />
+                        </div>
+
+                        <!-- Danh mục sản phẩm -->
+                        <div class="mb-4">
+                            <x-input-label for="category_id" :value="__('Danh mục sản phẩm:')" />
+                            <select id="category_id" name="category_id" class="form-control w-full dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                                @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('category_id')" class="mt-2" id="category_id_error" />
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="flex justify-end">
+                            <button type="button" id="closeModalBtn2" class="px-4 py-2 mr-2 text-gray-500 border border-gray-300 rounded-lg dark:text-gray-300 dark:border-gray-600">Hủy</button>
+                            <button type="submit" id="submitProductBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Cập nhật</button>
+                        </div>
+                    </form>
                 </div>
-
-                <!-- price Field -->
-                <div class="mb-4">
-                    <label for="price" class="block text-sm font-medium text-gray-700">Description:</label>
-                    <input id="price" name="price" type="number" step="0.01" min="0" value="{{$product->price}}"
-                           class="mt-1 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-200"
-                           placeholder="Enter price" >
-                </div>
-
-                <!-- Submit Button -->
-                <div class="mt-6">
-                    <button type="submit"
-                            class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-blue-700 transition">
-                        🚀 Create Task
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </x-app-layout>
+
+<style>
+    /* Ẩn spinner trong trình duyệt Webkit (Chrome, Safari) */
+    .no-spinner::-webkit-outer-spin-button,
+    .no-spinner::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Ẩn spinner trong Firefox */
+    .no-spinner[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>

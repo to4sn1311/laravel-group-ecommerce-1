@@ -42,8 +42,8 @@ Route::middleware('auth')->group(function () {
 
     // Quản lý vai trò
     Route::resource('roles', RoleController::class);
-
-    Route::resource('products', ProductController::class);
 });
+
+Route::resource('products', ProductController::class);
 
 require __DIR__ . '/auth.php';
