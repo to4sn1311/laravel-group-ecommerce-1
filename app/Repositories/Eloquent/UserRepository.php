@@ -34,6 +34,29 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
+     * Tìm kiếm và phân trang người dùng
+     * 
+     * @param string|null $search
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function search($search = null, $perPage = 10)
+    {
+        $query = $this->model->with('roles')->whereDoesntHave('roles', function($query) {
+            $query->where('name', 'Super Admin');
+        });
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
      * @param int $id
      * @return User|null
      */

@@ -14,6 +14,15 @@ interface UserRepositoryInterface
     public function getAll();
     
     /**
+     * Tìm kiếm và phân trang người dùng
+     * 
+     * @param string|null $search
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function search($search = null, $perPage = 10);
+    
+    /**
      * Lấy một người dùng theo ID
      * 
      * @param int $id

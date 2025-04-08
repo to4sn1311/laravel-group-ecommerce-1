@@ -29,6 +29,18 @@ class UserService
     }
 
     /**
+     * Tìm kiếm và phân trang người dùng
+     * 
+     * @param string|null $search
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function searchUsers($search = null, $perPage = 10)
+    {
+        return $this->userRepository->search($search, $perPage);
+    }
+
+    /**
      * @param int $id
      * @return \App\Models\User
      */
