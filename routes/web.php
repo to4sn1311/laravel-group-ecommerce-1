@@ -37,26 +37,30 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:role-delete')->delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 });
 
-// Route cho các trang client
-// Route::prefix('client')->group(function () {
-//     Route::get('/', function () {
-//         return view('client.layout.app');
-//     })->name('client.home');
+Route::prefix('client')->group(function () {
+    Route::get('/', function () {
+        return view('client.index');
+    })->name('client.index');
+
+    Route::get('/shop', function () {
+        return view('client.shop-grid');
+    })->name('client.shop');
+
+    Route::get('/shop-details', function () {
+        return view('client.shop-details');
+    })->name('shop-details');
     
-//     Route::get('/shop', function () {
-//         return view('client.shop-grid');
-//     })->name('client.shop');
+    Route::get('/blog', function () {
+        return view('client.blog');
+    })->name('blog');
     
-//     Route::get('/blog', function () {
-//         return view('client.blog');
-//     })->name('client.blog');
-    
-//     Route::get('/contact', function () {
-//         return view('client.contact');
-//     })->name('client.contact');
-// });
-Route::get('/client', function(){
-    return view('client.index');
+    Route::get('/contact', function () {
+        return view('client.contact');
+    })->name('contact');
+
+    Route::get('/login', function () {
+        return view('client.auth.login');
+    })->name('client.login');
 });
 
 require __DIR__.'/auth.php';
