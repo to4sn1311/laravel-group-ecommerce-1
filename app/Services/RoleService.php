@@ -15,4 +15,16 @@ class RoleService
     {
         return $this->roleRepository->all();
     }
+
+    /**
+     * Tìm kiếm và phân trang vai trò
+     * 
+     * @param string|null $search
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function searchRoles($search = null, $perPage = 10)
+    {
+        return $this->roleRepository->search($search, $perPage);
+    }
 }
