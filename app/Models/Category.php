@@ -40,8 +40,4 @@ class Category extends Model
     /**
      * Get the products directly assigned to this category.
      */
-    public function directProducts()
-    {
-        return $this->hasMany(Product::class);
-    }
 }

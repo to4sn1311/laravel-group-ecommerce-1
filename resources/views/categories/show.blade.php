@@ -46,15 +46,11 @@
                                                 @endif
                                                 
                                                 @if(Auth::user()->hasPermission('category-delete'))
-                                                <form method="POST" action="{{ route('categories.destroy', $category->id) }}" 
-                                                    onsubmit="return confirm('Bạn có chắc muốn xóa danh mục này?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" 
-                                                        class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition">
-                                                        {{ __('Xóa') }}
-                                                    </button>
-                                                </form>
+                                                <button 
+                                                    data-id="{{ $category->id }}" 
+                                                    class="delete-category px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                                    {{ __('Xóa') }}
+                                                </button>
                                                 @endif
                                             </td>
                                         </tr>
@@ -73,4 +69,26 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".delete-category").click(function () {
+                let categoryId = $(this).data("id");
+                if (!confirm("Bạn có chắc muốn xóa danh mục này?")) return;
+    
+                $.ajax({
+                    url: `/categories/${categoryId}`, 
+                    type: "DELETE",
+                    headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
+                    success: function (response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        alert("Có lỗi xảy ra: " + xhr.responseJSON.message);
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout> 

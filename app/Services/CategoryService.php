@@ -25,16 +25,18 @@ class CategoryService
      */
     public function getAllCategories()
     {
-        return $this->categoryRepository->getAll();
+        return $this->categoryRepository->all();
     }
-
+    public function getParentWithChildrenCount(){
+        return $this->categoryRepository->getParentWithChildrenCount();
+    }
     /**
      * @param int $id
      * @return \App\Models\Category
      */
     public function getCategoryById(int $id)
     {
-        return $this->categoryRepository->findById($id);
+        return $this->categoryRepository->find($id);
     }
 
     /**
@@ -43,6 +45,9 @@ class CategoryService
      */
     public function createCategory(array $data)//xl qt
     {
+        if($data['parent_id']=='null'){
+            $data['parent_id']=null;
+        }
         $category = $this->categoryRepository->create([
             'name' => $data['name'],
             'parent_id' => $data['parent_id'],
@@ -57,11 +62,13 @@ class CategoryService
      */
     public function updateCategory(int $id, array $data)
     {
+        if($data['parent_id']=='null'){
+            $data['parent_id']=null;
+        }
         $categoryData = [
             'name' => $data['name'],
             'parent_id' => $data['parent_id']
         ];
-        
         $this->categoryRepository->update($id, $categoryData);
 
         return true;

@@ -3,24 +3,10 @@
 namespace App\Repositories\Interfaces;
 
 use App\Models\Category;
+use App\Repositories\BaseRepositoryInterface;
 
-interface CategoryRepositoryInterface
+interface CategoryRepositoryInterface extends BaseRepositoryInterface
 {
-
-    public function getAll();
     public function getAllParent();
-
-  
-    public function findById(int $id);
-
-    public function create(array $data);
-    
-
-    public function update(int $id, array $data);
-    
-
-    public function delete(int $id);
-
-    
-    
+    public function getParentWithChildrenCount();
 }
