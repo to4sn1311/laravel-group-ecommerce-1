@@ -13,7 +13,6 @@ class CategoryController extends Controller
 
     public function __construct(CategoryService $categoryService)
     {
-        
         $this->categoryService = $categoryService;
     }
     public function index()
@@ -27,17 +26,20 @@ class CategoryController extends Controller
     }
     public function create()
     {
-        $categories = $this->categoryService->getAllParentCategories();
-        return view('categories.create',[ 'categories' => $categories]);
+        try {
+             $categories = $this->categoryService->getAllParentCategories();
+            return view('categories.create',[ 'categories' => $categories]);
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Lỗi: '.$e->getMessage());
+        }
     }
     public function store(CreateCategoryRequest $request)
     {
         try {
             $this->categoryService->createCategory($request->validated());
-            if ($request->wantsJson()) {
-                return response()->json(['message' => 'Category created successfully.'], 200);
-            }
-            return redirect()->route('categories.index');
+            
+            return response()->json(['message' => 'Tạo danh mục thành công.'], 200);
+            //return redirect()->route('categories.index');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Lỗi khi tạo danh mục.');
         }
@@ -49,23 +51,26 @@ class CategoryController extends Controller
             $categories = $this->categoryService->getAllParentCategories();
             return view('categories.edit', compact('category','categories'));
         } catch (\Exception $e) {
-            return redirect()->route('categories.index')->with('message', 'Không tìm thấy danh mục.');
+            return redirect()->route('categories.index')->with('error', 'Không tìm thấy danh mục.');
         }
     }
     public function update(UpdateCategoryRequest $request, $id)
     {
         try {
             $this->categoryService->updateCategory($id, $request->validated());
-            if ($request->wantsJson()) {
-                return response()->json(['message' => 'Category updated successfully.'], 200);
-            }
-            return redirect()->route('categories.index');
+            return response()->json(['message' => 'Cập nhật danh mục thành công.'], 200);
+            //return redirect()->route('categories.index');
         }  catch (\Exception $e) {
-            return back()->with('error', 'Lỗi khi cập nhật danh mục: ' . $e->getMessage());
+            return back()->with('error', 'Lỗi: ' . $e->getMessage());
         }
     }
     public function destroy($id)
     {
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Danh mục không tồn tại.'], 404);
+        }
         try {
             $this->categoryService->deleteCategory($id);
             return response()->json(['message' => 'Danh mục đã được xóa thành công!']);

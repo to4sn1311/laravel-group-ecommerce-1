@@ -9,6 +9,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    @if(session('error'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('error') }}</span>
+                    </div>
+                    @endif
                     <form id="category-form" method="POST" action="{{ route('categories.store') }}" class="space-y-6">
                         @csrf
 
@@ -60,6 +65,7 @@
                     type: 'POST',
                     data: formData,
                     success: function(response) {
+                        alert(response.message);
                         // Nếu thành công, chuyển hướng về danh sách category
                         window.location.href = '{{ route('categories.index') }}';
                     },
