@@ -69,9 +69,8 @@ require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/categories/search', [CategoryController::class, 'search'])->name('categories.search');
-    Route::get('/categories/{parentId}/search-children', [CategoryController::class, 'searchChildren'])->name('categories.search-children');
-
+    Route::middleware('permission:category-list')->get('/categories/search', [CategoryController::class, 'search'])->name('categories.search');
+    Route::middleware('permission:category-list')->get('/categories/{parentId}/search-children', [CategoryController::class, 'searchChildren'])->name('categories.search-children');
     Route::middleware('permission:category-list')->get('/categories',[CategoryController::class,'index'])
     ->name('categories.index');
 
