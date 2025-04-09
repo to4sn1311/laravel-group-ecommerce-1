@@ -68,6 +68,10 @@ Route::prefix('client')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/categories/search', [CategoryController::class, 'search'])->name('categories.search');
+    Route::get('/categories/{parentId}/search-children', [CategoryController::class, 'searchChildren'])->name('categories.search-children');
+
     Route::middleware('permission:category-list')->get('/categories',[CategoryController::class,'index'])
     ->name('categories.index');
 
@@ -82,5 +86,6 @@ Route::middleware('permission:role-edit')->get('/categories/{id}/edit', [Categor
 Route::middleware('permission:role-edit')->put('/categories/{id}',[CategoryController::class,'update'])
 ->name('categories.update');
 Route::middleware('permission:role-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
 
 });

@@ -83,6 +83,35 @@ class CategoryController extends Controller
             return redirect()->route('categories.index')->with('message', 'Không tìm thấy danh mục.');
         }
     }
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $categories = Category::where('name', 'like', "%$keyword%")
+            ->whereNull('parent_id')
+            ->withCount('children')
+            ->paginate(10);
+
+        return response()->json([
+            'categories' => $categories->items(),
+            'pagination' => (string) $categories->links()
+        ]);
+    }
+
+    public function searchChildren(Request $request, $parentId)
+    {
+        $keyword = $request->input('keyword');
+    
+        $categories = Category::where('parent_id', $parentId)
+            ->where('name', 'like', "%$keyword%")
+            ->paginate(10);
+    
+        return response()->json([
+            'categories' => $categories->items(),
+            'pagination' => (string) $categories->links()
+        ]);
+    }
+    
     /*
     protected $category;
     public function __construct(Category $category) {
