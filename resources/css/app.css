@@ -2,3 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ẩn spinner trong trình duyệt Webkit (Chrome, Safari) */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Ẩn spinner trong Firefox */
+.no-spinner[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Select2 dark mode fix */
+.select2-container--default .select2-selection--multiple {
+    background-color: #1f2937; /* dark:bg-gray-900 */
+    color: #d1d5db; /* dark:text-gray-300 */
+    border-color: #374151; /* dark:border-gray-700 */
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color:#f3f4f6; /* darker background for selected tags */
+    color: #1f2937;
+    border: none;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #9ca3af; /* gray-400 */
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    background-color: transparent;
+    color: #d1d5db;
+}
+.select2-dropdown{
+    background-color: #1f2937; /* dark:bg-gray-900 */
+    color: #d1d5db;
+}
+
+.select2-container--default .select2-results__option--selected {
+    background-color: #f3f4f6;
+    color: #374151;
+}

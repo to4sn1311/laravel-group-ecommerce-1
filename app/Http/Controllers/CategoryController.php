@@ -7,20 +7,21 @@ use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
+
 class CategoryController extends Controller
-{   
+{
     protected $categoryService;
 
     public function __construct(CategoryService $categoryService)
     {
-        
+
         $this->categoryService = $categoryService;
     }
     public function index()
     {
         try {
             $categories = $this->categoryService->getParentWithChildrenCount();
-            return view('categories.index',compact('categories'));
+            return view('categories.index', compact('categories'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Lỗi khi tải danh sách danh mục.');
         }
@@ -28,7 +29,7 @@ class CategoryController extends Controller
     public function create()
     {
         $categories = $this->categoryService->getAllParentCategories();
-        return view('categories.create',[ 'categories' => $categories]);
+        return view('categories.create', ['categories' => $categories]);
     }
     public function store(CreateCategoryRequest $request)
     {
@@ -47,7 +48,7 @@ class CategoryController extends Controller
         try {
             $category = $this->categoryService->getCategoryById($id);
             $categories = $this->categoryService->getAllParentCategories();
-            return view('categories.edit', compact('category','categories'));
+            return view('categories.edit', compact('category', 'categories'));
         } catch (\Exception $e) {
             return redirect()->route('categories.index')->with('message', 'Không tìm thấy danh mục.');
         }
@@ -60,7 +61,7 @@ class CategoryController extends Controller
                 return response()->json(['message' => 'Category updated successfully.'], 200);
             }
             return redirect()->route('categories.index');
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
             return back()->with('error', 'Lỗi khi cập nhật danh mục: ' . $e->getMessage());
         }
     }
@@ -77,8 +78,8 @@ class CategoryController extends Controller
     {
         try {
             $category = $this->categoryService->getCategoryById($id);
-            $categories=Category::whereNotNull('parent_id')->where('parent_id', $id) ->paginate(10);
-            return view('categories.show', compact('category','categories'));
+            $categories = Category::whereNotNull('parent_id')->where('parent_id', $id)->paginate(10);
+            return view('categories.show', compact('category', 'categories'));
         } catch (\Exception $e) {
             return redirect()->route('categories.index')->with('message', 'Không tìm thấy danh mục.');
         }
@@ -121,5 +122,4 @@ class CategoryController extends Controller
         Category::findOrFail($id)->delete();
         return redirect()->route('categories.index');
     }*/
-
 }

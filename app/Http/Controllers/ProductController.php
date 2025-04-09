@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Services\ProductService;
 use Exception;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -23,16 +24,13 @@ class ProductController extends Controller
     {
         try {
             $products = $this->productService->getAll();
-            $categories = Category::whereNotNull('parent_id')->get();
-
+            $categories = Category::select('id', 'name')->get();
             if (request()->ajax()) {
                 return response()->json([
-                    'success' => true,
-                    'products' => $products,
-                    'categories' => $categories
+                    'products' => $products
                 ]);
             }
-            return view('products.index');
+            return view('products.index', compact('products', 'categories'));
         } catch (\Exception $e) {
             if (request()->ajax()) {
                 return response()->json([
@@ -45,60 +43,61 @@ class ProductController extends Controller
     }
 
 
-    public function create()
-    {
-        $categories = Category::whereNotNull('parent_id')->get();
-        if (request()->ajax()) {
-            return response()->json([
-                'categories' => $categories
-            ]);
-        }
-    }
+    // public function create()
+    // {
+    //     $categories = Category::select('id', 'name')->get();
+    //     // if (request()->ajax()) {
+    //     //     return response()->json([
+    //     //         'categories' => $categories
+    //     //     ]);
+    //     // }
+    //     return view('products.modal', compact('categories'));
+    // }
 
 
     public function store(StoreProductRequest $request)
     {
         try {
+            DB::beginTransaction();
             $product = $this->productService->create($request->validated());
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Sản phẩm đã được tạo thành công.',
-                    'product' => $product
-                ]);
-            }
-            return redirect()->route('products.index')
-                ->with('success', 'Sản phẩm đã được tạo thành công');
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Sản phẩm đã được tạo thành công.', 'data' => $product]);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Lỗi khi tạo sản phẩm!'], 500);
+            DB::rollBack();
+            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
         }
     }
 
 
     public function show(string $id)
     {
-        $product = $this->productService->find($id);
-        if (!$product) {
-            return response()->json(['error' => 'Không tìm thấy sản phẩm.'], Response::HTTP_NOT_FOUND);
+        try {
+            $product = $this->productService->find($id);
+            return response()->json(['success' => true, 'message' => 'Sản phẩm đã được hiển thị', 'data' => $product]);
+        } catch (\Exception $e) {
+            return redirect()->route('products.index')->with('message', 'Không tìm thấy danh mục.');
         }
-        return view('products.show', compact('product'));
     }
 
     public function edit(string $id)
     {
         try {
             $product = $this->productService->find($id);
-            $categories = Category::all();
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'product' => $product,
-                    'categories' => $categories
-                ]);
-            }
-
-            $categories = Category::whereNotNull('parent_id')->get();
-            return view('products.edit', compact('product', 'categories'));
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'description' => $product->description,
+                    'categories' => $product->categories->map(function ($category) {
+                        return [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                        ];
+                    }),
+                ],
+            ]);
         } catch (Exception $e) {
             if (request()->ajax()) {
                 return response()->json([
@@ -114,17 +113,14 @@ class ProductController extends Controller
     public function update(UpdateProductRequest  $request, string $id)
     {
         try {
-            $updated = $this->productService->update($id, $request->validated());
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Sản phẩm đã được cập nhật thành công.',
-                    'product' => $updated
-                ]);
-            }
-            return redirect()->route('products.index')->with('success', 'Sản phẩm đã được cập nhật!');
+            DB::beginTransaction();
+            $data = $request->validated();
+            $data['categories'] = $request->input('categories', []);
+            $updated = $this->productService->update($id, $data);
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Sản phẩm đã được sửa thành công.', 'data' => $updated]);
         } catch (Exception $e) {
+            DB::rollBack();
             return back()->with('error', 'Lỗi khi cập nhật sản phẩm: ' . $e->getMessage());
         }
     }

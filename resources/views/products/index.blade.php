@@ -34,6 +34,7 @@
     </div>
 
     @include('products.modal')
+    @include('products.show')
 </x-app-layout>
 
 @vite(['resources/js/products.js'])

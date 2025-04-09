@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\ProductRepositoryInterface;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Traits\HandleImage;
 
 class ProductService
@@ -29,52 +27,24 @@ class ProductService
     }
     public function create(array $data)
     {
-        try {
-            DB::beginTransaction();
+        $categories = $data['categories'] ?? [];
+        unset($data['categories']);
 
-            // if (isset($data['image_file'])) {
-            //     $data['image'] = $this->uploadImage($data['image_file'], 'products');
-            //     unset($data['image_file']);
-            // }
+        $product = $this->productRepository->create($data);
+        $product->categories()->sync($categories);
 
-            $product = $this->productRepository->create($data);
-            $product->categories()->sync($data['category_ids'] ?? []);
-
-            DB::commit();
-            return $product;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e);
-            throw $e;
-        }
+        return $product;
     }
 
     public function update(int $id, array $data)
     {
-        try {
-            DB::beginTransaction();
+        $categories = $data['categories'] ?? [];
+        unset($data['categories']);
 
-            $product = $this->productRepository->find($id);
+        $product = $this->productRepository->update($id, $data);
+        $product->categories()->sync($categories);
 
-            // if (isset($data['image_file'])) {
-            //     if ($product->image && \Storage::disk('public')->exists($product->image)) {
-            //         \Storage::disk('public')->delete($product->image);
-            //     }
-
-            //     $data['image'] = $this->uploadImage($data['image_file'], 'products');
-            //     unset($data['image_file']);
-            // }
-
-            $product = $this->productRepository->update($id, $data);
-            $product->categories()->sync($data['category_ids'] ?? []);
-
-            DB::commit();
-            return $product;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e);
-            throw $e;
-        }
+        return $product;
     }
 
     public function delete(int $id)

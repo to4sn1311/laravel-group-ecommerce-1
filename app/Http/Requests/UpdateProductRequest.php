@@ -22,11 +22,11 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|max:255',
-            'price' => 'sometimes|numeric|min:0',
-            'description' => 'sometimes|string',
-            'category_ids' => 'sometimes|array',
-            'category_ids.*' => 'exists:categories,id'
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'description' => 'required|string',
+            'categories' => 'array',
+            'categories.*' => 'exists:categories,id'
         ];
     }
 
@@ -34,8 +34,18 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên sản phẩm không được để trống.',
+            'name.string' => 'Tên sản phẩm phải là chuỗi ký tự.',
+            'name.max' => 'Tên sản phẩm không được vượt quá :max ký tự.',
+
             'price.required' => 'Giá không được để trống.',
-            'category_id.exists' => 'Danh mục không hợp lệ.'
+            'price.numeric' => 'Giá phải là một số.',
+            'price.min' => 'Giá phải lớn hơn hoặc bằng :min.',
+
+            'description.required' => 'Mô tả không được để trống.',
+            'description.string' => 'Mô tả phải là chuỗi ký tự.',
+
+            'categories.array' => 'Danh mục phải là một mảng.',
+            'categories.*.exists' => 'Danh mục không hợp lệ.'
         ];
     }
 }

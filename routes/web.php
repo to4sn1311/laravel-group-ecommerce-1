@@ -40,6 +40,12 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:role-delete')->delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 });
 
+// Quản lý người dùng
+Route::resource('users', UserController::class);
+
+// Quản lý vai trò
+Route::resource('roles', RoleController::class);
+
 Route::prefix('client')->group(function () {
     Route::get('/', function () {
         return view('client.index');
@@ -52,11 +58,11 @@ Route::prefix('client')->group(function () {
     Route::get('/shop-details', function () {
         return view('client.shop-details');
     })->name('shop-details');
-    
+
     Route::get('/blog', function () {
         return view('client.blog');
     })->name('blog');
-    
+
     Route::get('/contact', function () {
         return view('client.contact');
     })->name('contact');
@@ -65,34 +71,20 @@ Route::prefix('client')->group(function () {
         return view('client.auth.login');
     })->name('client.login');
 });
-
-require __DIR__.'/auth.php';
-
 Route::middleware('auth')->group(function () {
-    Route::middleware('permission:category-list')->get('/categories',[CategoryController::class,'index'])
-    ->name('categories.index');
+    Route::middleware('permission:category-list')->get('/categories', [CategoryController::class, 'index'])
+        ->name('categories.index');
+});
 
-Route::middleware('permission:category-create')->get('/categories/create',[CategoryController::class,'create'])
+Route::middleware('permission:category-create')->get('/categories/create', [CategoryController::class, 'create'])
     ->name('categories.create');
 
-Route::middleware('permission:role-create')->post('/categories',[CategoryController::class,'store'])
-->name('categories.store');
-
+Route::middleware('permission:role-create')->post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 Route::middleware('permission:role-list')->get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 Route::middleware('permission:role-edit')->get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-Route::middleware('permission:role-edit')->put('/categories/{id}',[CategoryController::class,'update'])
-->name('categories.update');
+Route::middleware('permission:role-edit')->put('/categories/{id}', [CategoryController::class, 'update'])
+    ->name('categories.update');
 Route::middleware('permission:role-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-
-});
-
-    // Quản lý người dùng
-    Route::resource('users', UserController::class);
-
-    // Quản lý vai trò
-    Route::resource('roles', RoleController::class);
-});
-
 Route::resource('products', ProductController::class);
 
 require __DIR__ . '/auth.php';
