@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Chi tiết vai trò') }}
+            {{ __('Quản lý Category') }}
         </h2>
     </x-slot>
 
@@ -20,23 +20,29 @@
                     </div>
                     @endif
                     <!-- Thông tin cơ bản -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold mb-4">{{ __('Thông tin cơ bản') }}</h3>
+                    <div class="mb-8 p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ __('Thông tin Parent Category') }}
+                        </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Tên vai trò') }}</p>
-                                <p>{{ $category->name }}</p>
-                            </div>
+                            <div class="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-between">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Tên:') }}</p>
+                                <p class="text-base font-medium text-gray-900 dark:text-gray-100">{{ $category->name }}</p>
+                            </div>                            
                         </div>
                     </div>
+                    
 
                     <!--  -->
                     <div class="mb-8">
                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-md">
-                            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách danh mục') }}</h2>
+                            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách Child Category') }}</h2>
                         
                             <div class="mb-4">
-                                <input type="text" id="search-child-category" placeholder="Nhập tên danh mục con..."
+                                <input type="text" id="search-child-category" placeholder="🔍 Nhập tên child category..."
                                     class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:text-white">
                             </div>
                             <div class="overflow-x-auto">
@@ -53,10 +59,16 @@
                                             <td class="py-3 px-4">{{ $category->name }}</td>
                                             <td class="py-3 px-4 text-center">
                                                 @if(Auth::user()->hasPermission('category-edit'))
-                                                <a href="{{ route('categories.edit', $category->id) }}" class="ml-2 text-green-500 hover:text-green-700">Sửa</a>
+                                                <a href="{{ route('categories.edit', $category->id) }}" 
+                                                    class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
+                                                    ✏️ Sửa
+                                                </a>
                                                 @endif
                                                 @if(Auth::user()->hasPermission('category-delete'))
-                                                <button data-id="{{ $category->id }}" class="delete-category text-red-500 hover:text-red-700">Xóa</button>
+                                                    <button data-id="{{ $category->id }}" 
+                                                            class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
+                                                        🗑️ Xóa
+                                                    </button>
                                                 @endif
                                             </td>
                                         </tr>
@@ -122,13 +134,20 @@
                                     <tr>
                                         <td class="py-3 px-4">${category.name}</td>
                                         <td class="py-3 px-4 text-center">
-                                            @if(Auth::user()->hasPermission('category-edit'))
-                                            <a href="/categories/${category.id}/edit" class="ml-2 text-green-500 hover:text-green-700">Sửa</a>
-                                            @endif
-                                            @if(Auth::user()->hasPermission('category-delete'))
-                                            <button data-id="${category.id}" class="delete-category text-red-500 hover:text-red-700">Xóa</button>
-                                            @endif
-                                            
+        
+
+                                             @if(Auth::user()->hasPermission('category-edit'))
+                                                <a href="/categories/${category.id}/edit" 
+                                                    class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
+                                                    ✏️ Sửa
+                                                </a>
+                                                @endif
+                                                @if(Auth::user()->hasPermission('category-delete'))
+                                                    <button data-id="${category.id}"  
+                                                            class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
+                                                        🗑️ Xóa
+                                                    </button>
+                                                @endif
                                         </td>
                                     </tr>
                                 `;

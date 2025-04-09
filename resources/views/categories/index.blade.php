@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Quản lý category') }}
+            {{ __('Quản lý Category') }}
         </h2>
     </x-slot>
 
@@ -21,19 +21,20 @@
                     </div>
                     @endif
 
-                    @if(Auth::user()->hasPermission('category-create'))
-                    <div class="mb-6">
-                        <a href="{{ route('categories.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            {{ __('Thêm category mới') }}
-                        </a>
-                    </div>
-                    @endif
-                    <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-md">
-                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách danh mục') }}</h2>
                     
+                    <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-md">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách Parent Category') }}</h2>
+                        @if(Auth::user()->hasPermission('category-create'))
+                        <div class="mb-6 flex justify-end">
+                            <a href="{{ route('categories.create') }}" 
+                               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                                {{ __('➕ Thêm category mới') }}
+                            </a>
+                        </div>
+                        @endif
 
                         <div class="mb-4">
-                            <input type="text" id="search-category" placeholder="Nhập tên danh mục..."
+                            <input type="text" id="search-category" placeholder="🔍 Nhập tên danh mục..."
                                 class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:text-white">
                         </div>
                         <div class="overflow-x-auto">
@@ -41,7 +42,7 @@
                                 <thead>
                                     <tr class="bg-blue-500 text-white">
                                         <th class="py-3 px-4 text-left">{{ __('Tên') }}</th>
-                                        <th class="py-3 px-4 text-left">{{ __('Count_child') }}</th>
+                                        <th class="py-3 px-4 text-left">{{ __('Child category') }}</th>
                                         <th class="py-3 px-4 text-center">{{ __('Hành động') }}</th>
                                     </tr>
                                 </thead>
@@ -51,13 +52,28 @@
                                         <td class="py-3 px-4">{{ $category->name }}</td>
                                         <td class="py-3 px-4">{{ $category->children_count }}</td>
                                         <td class="py-3 px-4 text-center">
-                                            <a href="{{ route('categories.show', $category->id) }}" class="text-blue-500 hover:text-blue-700">Xem</a>
-                                            @if(Auth::user()->hasPermission('category-edit'))
-                                            <a href="{{ route('categories.edit', $category->id) }}" class="ml-2 text-green-500 hover:text-green-700">Sửa</a>
-                                            @endif
-                                            @if(Auth::user()->hasPermission('category-delete'))
-                                            <button data-id="{{ $category->id }}" class="delete-category text-red-500 hover:text-red-700">Xóa</button>
-                                            @endif
+                                            @if(Auth::user()->hasPermission('category-list'))
+                                            <a href="{{ route('categories.show', $category->id) }}" 
+                                               class="inline-flex items-center px-3 py-1 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition">
+                                               👀 Xem
+                                            </a>
+                                        @endif
+                                        
+                                        @if(Auth::user()->hasPermission('category-edit'))
+                                        <a href="{{ route('categories.edit', $category->id) }}" 
+                                            class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
+                                            ✏️ Sửa
+                                         </a>
+                                         
+                                        @endif
+                                        
+                                        @if(Auth::user()->hasPermission('category-delete'))
+                                            <button data-id="{{ $category->id }}" 
+                                                    class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
+                                                🗑️ Xóa
+                                            </button>
+                                        @endif
+                                        
                                         </td>
                                     </tr>
                                     @endforeach
@@ -121,13 +137,27 @@ $(document).ready(function () {
                                     <td class="py-3 px-4">${category.name}</td>
                                     <td class="py-3 px-4">${category.children_count}</td>
                                     <td class="py-3 px-4 text-center">
-                                        <a href="/categories/${category.id}" class="text-blue-500 hover:text-blue-700">Xem</a>
+                                        @if(Auth::user()->hasPermission('category-list'))
+                                            <a href="/categories/${category.id}" 
+                                               class="inline-flex items-center px-3 py-1 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition">
+                                               👀 Xem
+                                            </a>
+                                        @endif
+                                        
                                         @if(Auth::user()->hasPermission('category-edit'))
-                                        <a href="/categories/${category.id}/edit" class="ml-2 text-green-500 hover:text-green-700">Sửa</a>
+                                        <a href="/categories/${category.id}/edit" 
+                                            class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
+                                            ✏️ Sửa
+                                         </a>       
                                         @endif
+                                        
                                         @if(Auth::user()->hasPermission('category-delete'))
-                                        <button data-id="${category.id}" class="delete-category text-red-500 hover:text-red-700">Xóa</button>
+                                            <button data-id="${category.id}" 
+                                                    class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
+                                                🗑️ Xóa
+                                            </button>
                                         @endif
+                                        
                                     </td>
                                 </tr>
                             `;
