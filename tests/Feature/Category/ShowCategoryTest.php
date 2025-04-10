@@ -6,11 +6,11 @@ use App\Models\Category;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class GetListCategoryTest extends TestCase
+class ShowCategoryTest extends TestCase
 {
     protected $admin;
     
@@ -33,33 +33,31 @@ class GetListCategoryTest extends TestCase
         $this->admin = User::factory()->create();
         $this->admin->roles()->syncWithoutDetaching([$adminRole->id]);
     }
-
-    public function getListCategoryRoute(){
-    return route('categories.index'); //name
+    public function showCategoryViewRoute($id){
+        return route('categories.show',$id);
     }
     /** @test */
-    public function authorized_user_can_get_all_category()
+    public function unauthenticated_user_can_not_show_category()
+    {
+        $category = Category::factory()->create();
+        $response = $this->get($this->showCategoryViewRoute($category->id));
+        $response->assertRedirect('/login');
+    }
+    /** @test */
+    public function authorized_user_can_show_category()
     {
         $this->actingAs($this->admin);
-        Category::factory()->create();
-        $response = $this->get($this->getListCategoryRoute());
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertViewIs('categories.index');
+        $category = Category::factory()->create();
+        $response = $this->get($this->showCategoryViewRoute($category->id));
+        $response->assertViewIs('categories.show');
     }
     /** @test */
-    public function unauthorized_user_can_get_all_category()
+    public function unthorized_user_can_not_show_category()
     {
         $user = User::factory()->create();
-        $this->actingAs($user);        
-        Category::factory()->create();
-        $response = $this->get($this->getListCategoryRoute());
+        $this->actingAs($user);
+        $category = Category::factory()->create();
+        $response = $this->get($this->showCategoryViewRoute($category->id));
         $response->assertStatus(403);
-    } 
-     /** @test */
-     public function unauthenticated_user_can_get_all_category()
-     {
-         Category::factory()->create();
-         $response = $this->get($this->getListCategoryRoute());
-         $response->assertRedirect('/login');
-     }
+    }
 }
