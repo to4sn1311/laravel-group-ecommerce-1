@@ -58,10 +58,17 @@
                             <div class="mt-2 space-y-2">
                                 @foreach($roles as $role)
                                 <div class="flex items-center">
+                                    @if(Auth::user()->hasPermission('role-edit') || $role->name === 'User')
                                     <input id="role_{{ $role->id }}" type="checkbox" name="roles[]" value="{{ $role->id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ in_array($role->id, old('roles', [])) ? 'checked' : '' }}>
+                                    @else
+                                    <input id="role_{{ $role->id }}" type="checkbox" name="roles[]" value="{{ $role->id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {{ in_array($role->id, old('roles', [])) ? 'checked' : '' }} disabled>
+                                    @endif
                                     <label for="role_{{ $role->id }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                         {{ $role->name }}
                                         <span class="text-xs text-gray-500 dark:text-gray-400">{{ $role->description }}</span>
+                                        @if(!Auth::user()->hasPermission('role-edit') && $role->name !== 'User')
+                                        <span class="text-xs text-red-500 dark:text-red-400">(Bạn không có quyền gán vai trò này)</span>
+                                        @endif
                                     </label>
                                 </div>
                                 @endforeach
@@ -73,13 +80,21 @@
                             <a href="{{ route('users.index') }}" class="text-gray-500 hover:text-gray-700 mr-4">
                                 {{ __('Hủy') }}
                             </a>
+
+                            @if(Auth::user()->hasPermission('user-create'))
                             <x-primary-button>
                                 {{ __('Thêm người dùng') }}
                             </x-primary-button>
+                            @else
+                            <x-primary-button disabled class="opacity-50 cursor-not-allowed">
+                                {{ __('Thêm người dùng') }}
+                            </x-primary-button>
+                            <span class="text-xs text-red-500 ml-2">(Bạn không có quyền thêm người dùng)</span>
+                            @endif
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>

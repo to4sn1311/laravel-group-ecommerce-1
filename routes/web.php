@@ -13,13 +13,13 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'admin.access'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin.access'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Quản lý người dùng - sử dụng middleware permission
     Route::middleware('permission:user-list')->get('/users', [UserController::class, 'index'])->name('users.index');
     Route::middleware('permission:user-create')->get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:user-edit')->get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::middleware('permission:user-edit')->put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::middleware('permission:user-delete')->delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    
+
     // Quản lý vai trò - sử dụng middleware permission
     Route::middleware('permission:role-list')->get('/roles', [RoleController::class, 'index'])->name('roles.index');
     Route::middleware('permission:role-create')->get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
@@ -51,11 +51,11 @@ Route::prefix('client')->group(function () {
     Route::get('/shop-details', function () {
         return view('client.shop-details');
     })->name('shop-details');
-    
+
     Route::get('/blog', function () {
         return view('client.blog');
     })->name('blog');
-    
+
     Route::get('/contact', function () {
         return view('client.contact');
     })->name('contact');
@@ -63,6 +63,12 @@ Route::prefix('client')->group(function () {
     Route::get('/login', function () {
         return view('client.auth.login');
     })->name('client.login');
+
+    // Route cho profile của người dùng thông thường
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('client.profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('client.profile.update');
+    });
 });
 
 require __DIR__.'/auth.php';
