@@ -8,83 +8,34 @@ use App\Repositories\Interfaces\CategoryRepositoryInterface;
 
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
-    /**
-     * @var User
-     */
     protected $model;
-
-    /**
-   * UserRepository constructor.
-     *
-     * @param User $model
-     */
     public function __construct(Category $model)
     {
         $this->model = $model;
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    // public function getAll()
-    // {
-    //     return $this->model->latest('id')->paginate(10);
-    // }
     public function getAllParent(){
         return $this->model->whereNull('parent_id')->get();
     }
-
     public function getParentWithChildrenCount(){
         return $this->model->whereNull('parent_id')
         ->withCount('children')
         ->paginate(10);
+    } 
+    public function getChildren($id){
+        return $this->model->whereNotNull('parent_id')->where('parent_id', $id) ->paginate(10);
+    } 
+    public function searchCategories($keyword)
+    {
+        return Category::where('name', 'like', "%$keyword%")
+            ->whereNull('parent_id')
+            ->withCount('children')
+            ->paginate(10);
+    }
+    public function searchChildCategories($keyword,$id)
+    {
+        return Category::where('parent_id', $id)
+        ->where('name', 'like', "%$keyword%")
+        ->paginate(10);
     }
 
-    /**
-     * @param int $id
-     * @return Category
-     */
-    // public function findById(int $id)
-    // {
-    //     return $this->model->findOrFail($id);
-    // }
-
-    // /** 
-    //  * @param array $data
-    //  * @return Category
-    //  */
-    // public function create(array $data)
-    // {
-    //     if ($data['parent_id'] === 'null') {
-    //         $data['parent_id'] = null;
-    //     }        
-    //     return $this->model->create($data);
-    // }
-
-    // /** 
-    //  * @param int $id
-    //  * @param array $data
-    //  * @return bool
-    //  */
-    // public function update($id, array $data)
-    // {
-    //     $category = $this->findById($id);
-    //     if ($data['parent_id'] === 'null') {
-    //         $data['parent_id'] = null;
-    //     }          
-
-    //     return $category->update($data);
-    // }
-
-    // /**
-    //  * @param int $id
-    //  * @return bool
-    //  */
-    // public function delete($id)
-    // {
-    //     $category = $this->findById($id);
-    //     return $category->delete();
-    // }
-
-    
 }

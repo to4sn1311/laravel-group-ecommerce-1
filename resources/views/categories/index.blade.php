@@ -117,62 +117,78 @@ $(document).ready(function () {
 
 </script>
 <script>
-    $(document).ready(function () {
-        let debounceTimer;
+  $(document).ready(function () {
+    let debounceTimer;
 
-        $("#search-category").on("input", function () {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                let keyword = $(this).val();
-
-                $.ajax({
-                    url: "{{ route('categories.search') }}",
-                    type: "GET",
-                    data: { keyword: keyword },
-                    success: function (response) {
-                        let rows = "";
-                        response.categories.forEach(category => {
-                            rows += `
-                                <tr>
-                                    <td class="py-3 px-4">${category.name}</td>
-                                    <td class="py-3 px-4">${category.children_count}</td>
-                                    <td class="py-3 px-4 text-center">
-                                        @if(Auth::user()->hasPermission('category-list'))
-                                            <a href="/categories/${category.id}" 
-                                               class="inline-flex items-center px-3 py-1 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition">
-                                               👀 Xem
-                                            </a>
-                                        @endif
-                                        
-                                        @if(Auth::user()->hasPermission('category-edit'))
-                                        <a href="/categories/${category.id}/edit" 
-                                            class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
-                                            ✏️ Sửa
-                                         </a>       
-                                        @endif
-                                        
-                                        @if(Auth::user()->hasPermission('category-delete'))
-                                            <button data-id="${category.id}" 
-                                                    class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
-                                                🗑️ Xóa
-                                            </button>
-                                        @endif
-                                        
-                                    </td>
-                                </tr>
-                            `;
-                        });
-
-                        $("#category-list").html(rows);
-                        $("#pagination-links").html(response.pagination);
-                    },
-                    error: function () {
-                        alert("Có lỗi xảy ra khi tìm kiếm.");
-                    }
+    function fetchCategories(url, keyword = "") {
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: { keyword: keyword },
+            success: function (response) {
+                let rows = "";
+                response.categories.forEach(category => {
+                    rows += `
+                        <tr>
+                            <td class="py-3 px-4">${category.name}</td>
+                            <td class="py-3 px-4">${category.children_count}</td>
+                            <td class="py-3 px-4 text-center">
+                                @if(Auth::user()->hasPermission('category-list'))
+                                    <a href="/categories/${category.id}" 
+                                       class="inline-flex items-center px-3 py-1 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition">
+                                       👀 Xem
+                                    </a>
+                                @endif
+                                
+                                @if(Auth::user()->hasPermission('category-edit'))
+                                <a href="/categories/${category.id}/edit" 
+                                    class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
+                                    ✏️ Sửa
+                                 </a>       
+                                @endif
+                                
+                                @if(Auth::user()->hasPermission('category-delete'))
+                                    <button data-id="${category.id}" 
+                                            class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
+                                        🗑️ Xóa
+                                    </button>
+                                @endif
+                            </td>
+                        </tr>
+                    `;
                 });
-            }, 500);
+
+                $("#category-list").html(rows);
+                $("#pagination-links").html(response.pagination);
+            },
+            error: function () {
+                alert("Có lỗi xảy ra khi tải dữ liệu.");
+            }
         });
+    }
+
+    // Lắng nghe input tìm kiếm
+    $("#search-category").on("input", function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            let keyword = $(this).val();
+            fetchCategories("{{ route('categories.search') }}", keyword);
+        }, 500);
     });
+
+    // Xử lý sự kiện click trên phân trang
+    $(document).on("click", "#pagination-links a", function (e) {
+        e.preventDefault();
+        let url = $(this).attr("href");
+        let keyword = $("#search-category").val();
+        fetchCategories(url, keyword);
+    });
+
+    // Load danh sách ban đầu khi chưa tìm kiếm
+    fetchCategories("{{ route('categories.search') }}");
+});
+
+
 </script>
 
 </x-app-layout> 
