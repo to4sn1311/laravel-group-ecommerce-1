@@ -2,14 +2,14 @@
 
 @section('content')
     <!-- Breadcrumb Section Begin -->
-    <section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
+    <section class="breadcrumb-section set-bg" data-setbg="{{ asset('assets/img/breadcrumb.jpg') }}">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="breadcrumb__text">
                         <h2>Organi Shop</h2>
                         <div class="breadcrumb__option">
-                            <a href="./index.html">Home</a>
+                            <a href="{{ route('client.index') }}">Home</a>
                             <span>Shop</span>
                         </div>
                     </div>
@@ -191,7 +191,7 @@
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-7">
-                    <div class="product__discount">
+                    <!-- <div class="product__discount">
                         <div class="section-title product__discount__title">
                             <h2>Sale Off</h2>
                         </div>
@@ -307,8 +307,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="filter__item">
+                    </div> -->
+                    <div class="filter__item"> 
                         <div class="row">
                             <div class="col-lg-4 col-md-5">
                                 <div class="filter__sort">

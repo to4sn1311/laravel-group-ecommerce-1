@@ -35,16 +35,16 @@ class UserRepository implements UserRepositoryInterface
 
     /**
      * Tìm kiếm và phân trang người dùng
-     * 
+     *
      * @param string|null $search
      * @param int $perPage
+     * @param string|array|null $roles
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function search($search = null, $perPage = 10)
+    public function search($search = null, $roles = null, $perPage = 10)
     {
-        $query = $this->model->with('roles')->whereDoesntHave('roles', function($query) {
-            $query->where('name', 'Super Admin');
-        });
+        // Sử dụng scope withRole đã được định nghĩa trong model User
+        $query = $this->model->with('roles')->withRole($roles);
 
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -52,7 +52,6 @@ class UserRepository implements UserRepositoryInterface
                   ->orWhere('email', 'like', "%{$search}%");
             });
         }
-
         return $query->paginate($perPage);
     }
 
@@ -65,18 +64,18 @@ class UserRepository implements UserRepositoryInterface
         return $this->model->findOrFail($id);
     }
 
-    /** 
+    /**
      * @param array $data
      * @return User
      */
     public function create(array $data)
     {
         $data['password'] = Hash::make($data['password']);
-        
+
         return $this->model->create($data);
     }
 
-    /** 
+    /**
      * @param int $id
      * @param array $data
      * @return bool
@@ -84,13 +83,13 @@ class UserRepository implements UserRepositoryInterface
     public function update(int $id, array $data)
     {
         $user = $this->findById($id);
-        
+
         if (isset($data['password']) && !empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
         }
-        
+
         return $user->update($data);
     }
 

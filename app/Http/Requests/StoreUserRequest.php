@@ -37,7 +37,7 @@ class StoreUserRequest extends FormRequest
                 'email',
                 'max:255',
                 'unique:users',
-                'regex:/^[\w.+-]+@deha-soft\.com$/i', // Chỉ cho phép email có domain @deha-soft.com
+                'regex:/^[\w.+-]+@deha-soft\.com$/i',
             ],
             'password' => ['required', 'confirmed', Password::defaults()],
             'roles' => ['required', 'array']

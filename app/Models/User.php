@@ -67,4 +67,35 @@ class User extends Authenticatable
             $query->where('name', $permissionName);
         })->exists();
     }
+
+    /**
+     * Scope để lọc người dùng theo role, loại trừ Super Admin
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|array|null $roles
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithRole($query, $roles = null)
+    {
+        // Luôn loại trừ Super Admin
+        $query->whereDoesntHave('roles', function($q) {
+            $q->where('name', 'Super Admin');
+        });
+
+        // Nếu không có role cụ thể, chỉ cần loại trừ Super Admin
+        if (empty($roles)) {
+            return $query;
+        }
+
+        // Lọc theo role(s) được chỉ định
+        if (is_array($roles)) {
+            return $query->whereHas('roles', function ($q) use ($roles) {
+                $q->whereIn('name', $roles);
+            });
+        }
+
+        return $query->whereHas('roles', function ($q) use ($roles) {
+            $q->where('name', $roles);
+        });
+    }
 }
