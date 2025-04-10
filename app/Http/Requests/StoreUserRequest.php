@@ -13,11 +13,13 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        try {
-            return method_exists(Auth::user(), 'hasPermission') && Auth::user()->hasPermission('user-create');
-        } catch (\Exception $e) {
-            return true; // Cho phép nếu không thể kiểm tra quyền
+        // Kiểm tra nếu người dùng đã đăng nhập và có quyền tạo người dùng
+        if (Auth::check() && method_exists(Auth::user(), 'hasPermission')) {
+            return Auth::user()->hasPermission('user-create');
         }
+
+        // Cho phép nếu không thể kiểm tra quyền
+        return true;
     }
 
     /**
@@ -29,7 +31,14 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                'regex:/^[\w.+-]+@deha-soft\.com$/i',
+            ],
             'password' => ['required', 'confirmed', Password::defaults()],
             'roles' => ['required', 'array']
         ];
@@ -47,6 +56,7 @@ class StoreUserRequest extends FormRequest
             'email.required' => 'Email không được để trống',
             'email.email' => 'Email không đúng định dạng',
             'email.unique' => 'Email đã được sử dụng bởi người dùng khác',
+            'email.regex' => 'Email phải có định dạng @deha-soft.com',
             'password.required' => 'Mật khẩu không được để trống',
             'password.confirmed' => 'Xác nhận mật khẩu không khớp',
             'roles.required' => 'Vui lòng chọn ít nhất một vai trò'

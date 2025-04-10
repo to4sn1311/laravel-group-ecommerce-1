@@ -13,6 +13,21 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Fallback for Vite -->
+        <script>
+            // Kiểm tra nếu Vite không tải được (lỗi 404)
+            window.addEventListener('error', function(e) {
+                if (e.target.tagName === 'SCRIPT' && e.target.src.includes(':5173')) {
+                    // Thử lại với cổng 5174
+                    const newSrc = e.target.src.replace(':5173', ':5174');
+                    const newScript = document.createElement('script');
+                    newScript.src = newSrc;
+                    newScript.type = 'module';
+                    document.head.appendChild(newScript);
+                }
+            }, true);
+        </script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">

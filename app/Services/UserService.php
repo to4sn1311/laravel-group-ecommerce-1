@@ -30,14 +30,15 @@ class UserService
 
     /**
      * Tìm kiếm và phân trang người dùng
-     * 
+     *
      * @param string|null $search
      * @param int $perPage
+     * @param string|array|null $roles
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function searchUsers($search = null, $perPage = 10)
+    public function searchUsers($search = null, $roles = null, $perPage = 10)
     {
-        return $this->userRepository->search($search, $perPage);
+        return $this->userRepository->search($search, $roles, $perPage);
     }
 
     /**
@@ -57,18 +58,18 @@ class UserService
     {
         try {
             DB::beginTransaction();
-            
+
             $user = $this->userRepository->create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => $data['password']
             ]);
-            
+
             // Gán vai trò cho người dùng
             if (isset($data['roles'])) {
                 $this->userRepository->syncRoles($user->id, $data['roles']);
             }
-            
+
             DB::commit();
             return $user;
         } catch (\Exception $e) {
@@ -86,25 +87,25 @@ class UserService
     {
         try {
             DB::beginTransaction();
-            
+
             // Cập nhật thông tin người dùng
             $userData = [
                 'name' => $data['name'],
                 'email' => $data['email']
             ];
-            
+
             // Thêm mật khẩu nếu có
             if (isset($data['password']) && !empty($data['password'])) {
                 $userData['password'] = $data['password'];
             }
-            
+
             $this->userRepository->update($id, $userData);
-            
+
             // Cập nhật vai trò cho người dùng
             if (isset($data['roles'])) {
                 $this->userRepository->syncRoles($id, $data['roles']);
             }
-            
+
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -121,10 +122,10 @@ class UserService
     {
         try {
             DB::beginTransaction();
-            
+
             // Xóa người dùng
             $this->userRepository->delete($id);
-            
+
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -134,10 +135,19 @@ class UserService
     }
 
     /**
+     * @param bool $excludeSuperAdmin
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAllRoles()
+    public function getAllRoles($excludeSuperAdmin = false)
     {
-        return Role::all();
+        $roles = Role::all();
+
+        if ($excludeSuperAdmin) {
+            return $roles->filter(function($role) {
+                return $role->name !== 'Super Admin';
+            });
+        }
+
+        return $roles;
     }
 }

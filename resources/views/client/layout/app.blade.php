@@ -22,6 +22,184 @@
     <link rel="stylesheet" href="{{ asset('assets/css/slicknav.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('assets/css/client/login.css') }}">
+
+    <!-- Custom CSS for header section -->
+    <style>
+        /* Header Top Styles */
+        .header__top {
+            background-color: #f5f5f5;
+            padding: 10px 0;
+        }
+
+        .header__top__left ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .header__top__left ul li {
+            font-size: 14px;
+            color: #1c1c1c;
+            display: inline-block;
+            margin-right: 45px;
+            position: relative;
+            line-height: 36px;
+        }
+
+        .header__top__left ul li:last-child {
+            margin-right: 0;
+        }
+
+        .header__top__left ul li i {
+            color: #7fad39;
+            margin-right: 5px;
+        }
+
+        .header__top__right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .header__top__right__social {
+            margin-right: 25px;
+        }
+
+        .header__top__right__social a {
+            font-size: 14px;
+            color: #1c1c1c;
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .header__top__right__social a:last-child {
+            margin-right: 0;
+        }
+
+        .header__top__right__social a:hover {
+            color: #7fad39;
+        }
+
+        .header__top__right__language {
+            position: relative;
+            display: inline-block;
+            margin-right: 25px;
+            cursor: pointer;
+            padding-top: 2px;
+        }
+
+        .header__top__right__language img {
+            margin-right: 6px;
+        }
+
+        .header__top__right__language div {
+            font-size: 14px;
+            color: #1c1c1c;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .header__top__right__language span {
+            font-size: 14px;
+            color: #1c1c1c;
+            position: relative;
+            top: 2px;
+        }
+
+        .header__top__right__language ul {
+            background: #ffffff;
+            width: 100px;
+            border-radius: 3px;
+            padding: 5px 0;
+            position: absolute;
+            left: 0;
+            top: 43px;
+            z-index: 9;
+            opacity: 0;
+            visibility: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .header__top__right__language ul li {
+            list-style: none;
+        }
+
+        .header__top__right__language ul li a {
+            font-size: 14px;
+            color: #1c1c1c;
+            padding: 5px 10px;
+            display: block;
+        }
+
+        .header__top__right__language ul li a:hover {
+            color: #7fad39;
+            background: #f5f5f5;
+        }
+
+        .header__top__right__language:hover ul {
+            opacity: 1;
+            visibility: visible;
+            top: 33px;
+        }
+
+        /* User Auth Styles */
+        .header__top__right__auth {
+            display: flex;
+            align-items: center;
+        }
+
+        .header__top__right__auth .user-info {
+            color: #1c1c1c;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .header__top__right__auth .user-info i {
+            margin-right: 5px;
+        }
+
+        .header__top__right__auth .d-inline-block {
+            display: inline-block;
+        }
+
+        .header__top__right__auth .ml-2 {
+            margin-left: 10px;
+        }
+
+        .header__top__right__auth .logout-btn {
+            background: none;
+            border: none;
+            color: #1c1c1c;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.3s;
+        }
+
+        .header__top__right__auth .logout-btn:hover {
+            color: #7fad39;
+        }
+
+        .header__top__right__auth .logout-btn i {
+            font-size: 16px;
+        }
+
+        .header__top__right__auth a {
+            display: block;
+            font-size: 14px;
+            color: #1c1c1c;
+        }
+
+        .header__top__right__auth a i {
+            margin-right: 6px;
+        }
+
+        .header__top__right__auth a:hover {
+            color: #7fad39;
+        }
+    </style>
 </head>
 
 <body>
@@ -97,7 +275,7 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="header__top__left">
                             <ul>
-                                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
+                                <li><i class="fa fa-envelope"></i> hello@deha-soft.com</li>
                                 <li>Free Shipping for all Order of $99</li>
                             </ul>
                         </div>
@@ -115,12 +293,24 @@
                                 <div>English</div>
                                 <span class="arrow_carrot-down"></span>
                                 <ul>
-                                    <li><a href="#">Spanis</a></li>
+                                    <li><a href="#">Spanish</a></li>
                                     <li><a href="#">English</a></li>
                                 </ul>
                             </div>
                             <div class="header__top__right__auth">
-                                <a href="{{ route('client.login') }}"><i class="fa fa-user"></i> Login</a>
+                                @auth
+                                    <span class="user-info">
+                                        <i class="fa fa-user"></i> {{ Auth::user()->name }}
+                                    </span>
+                                    <form method="POST" action="{{ route('logout') }}" class="d-inline-block ml-2">
+                                        @csrf
+                                        <button type="submit" class="logout-btn" title="Logout">
+                                            <i class="fa fa-sign-out"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}"><i class="fa fa-user"></i> Login</a>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -131,7 +321,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a href="./index.html"><img src="{{ asset('assets/img/logo.png') }}" alt=""></a>
+                        <a href="{{ route('client.index') }}"><img src="{{ asset('assets/img/logo.png') }}" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -183,7 +373,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="footer__about">
                         <div class="footer__about__logo">
-                            <a href="./index.html"><img src="{{ asset('assets/img/logo.png') }}" alt=""></a>
+                            <a href="{{ route('client.index') }}"><img src="{{ asset('assets/img/logo.png') }}" alt=""></a>
                         </div>
                         <ul>
                             <li>Address: 60-49 Road 11378 New York</li>
@@ -253,6 +443,8 @@
     <script src="{{ asset('assets/js/mixitup.min.js') }}"></script>
     <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+
+
 
 </body>
 
