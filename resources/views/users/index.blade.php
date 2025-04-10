@@ -1,3 +1,4 @@
+
 <x-app-layout>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -28,6 +29,14 @@
 													<option value="10" class="bg-white dark:bg-gray-700" {{ request('per_page') == 10 ? 'selected' : '' }}>10 {{ __('mục/trang') }}</option>
 													<option value="25" class="bg-white dark:bg-gray-700" {{ request('per_page') == 25 ? 'selected' : '' }}>25 {{ __('mục/trang') }}</option>
 													<option value="50" class="bg-white dark:bg-gray-700" {{ request('per_page') == 50 ? 'selected' : '' }}>50 {{ __('mục/trang') }}</option>
+											</select>
+									</div>
+									<div>
+											<select name="role" onchange="this.form.submit()" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black-900 dark:text-gray-100 bg-white dark:bg-gray-700">
+													<option value="" class="bg-white dark:bg-gray-700">{{ __('Tất cả vai trò') }}</option>
+													@foreach($roles as $r)
+															<option value="{{ $r->name }}" class="bg-white dark:bg-gray-700" {{ $role == $r->name ? 'selected' : '' }}>{{ $r->name }}</option>
+													@endforeach
 											</select>
 									</div>
 									<button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
