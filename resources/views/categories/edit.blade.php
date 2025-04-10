@@ -9,6 +9,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    @if(session('error'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('error') }}</span>
+                    </div>
+                    @endif
                     <form id="category-update-form" method="POST" action="{{ route('categories.update', $category->id) }}">
                         @csrf
                         @method('PUT')
@@ -31,7 +36,15 @@
                             </select>
                         </div>
                     
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Cập nhật</button>
+                        <div class="flex items-center justify-end mt-4">
+                            <a href="{{ route('categories.index') }}" class="text-gray-500 hover:text-gray-700 font-semibold mr-4">
+                                {{ __('Hủy') }}
+                            </a>
+                            
+                            <x-primary-button>
+                                {{ __('Update') }}
+                            </x-primary-button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -52,6 +65,7 @@
                     type: 'POST',
                     data: formData,
                     success: function(response) {
+                        alert(response.message);
                         // Nếu thành công, chuyển hướng về danh sách category
                         window.location.href = '{{ route('categories.index') }}';
                     },
