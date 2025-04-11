@@ -1,10 +1,16 @@
 import { showProduct, editProduct, deleteProduct } from "./productApi";
 
-export function loadProducts() {
+export function loadProducts(url = '/products') {
+    const keyword = document.getElementById('search-name').value;
+    const priceRange = document.getElementById('price-range').value;
     $.ajax({
-        url: '/products',
+        url: url,
         type: 'GET',
         dataType: 'json',
+        data: {
+            keyword: keyword,
+            price_range: priceRange
+        },
         success: function (response) {
             // Check if products property exists in the response
             if (response.products) {
@@ -33,7 +39,6 @@ export function loadProducts() {
                     `;
                     tbody.appendChild(tr);
                 }
-
                 attachDeleteEvents();
             } else if (response.success === false) {
                 console.error('Error in API response:', response.message);

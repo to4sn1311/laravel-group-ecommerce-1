@@ -20,18 +20,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return $this->model->with('categories')->get();
     }
 
-    public function findByName(string $name)
+    public function search(array $filters, $perPage = 5)
     {
-        return $this->model->where('name', $name)->first();
-    }
-
-    public function findByCategoryId(int $categoryId)
-    {
-        return $this->model->where('category_id', $categoryId)->get();
-    }
-
-    public function searchByPrice($minPrice, $maxPrice)
-    {
-        return $this->model->whereBetween('price', [$minPrice, $maxPrice])->get();
+        return $this->model->with('categories')->filter($filters)->orderByDesc('id')->paginate($perPage);
     }
 }

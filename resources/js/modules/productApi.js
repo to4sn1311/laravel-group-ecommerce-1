@@ -1,6 +1,7 @@
 import { showModal } from './modal'
 import { loadProducts } from './productTable'
 import axios from 'axios';
+import debounce from 'lodash.debounce';
 
 export function showProduct(id) {
     axios.get(`/products/${id}`)

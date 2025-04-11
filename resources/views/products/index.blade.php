@@ -9,6 +9,28 @@
             </button>
         </div>
 
+        <div class=" max-w-7xl mx-auto flex justify-between items-center mb-6 gap-4">
+            <form id="search-form" class="w-full flex gap-4">
+                <div class="w-full flex-1">
+                    <input type="text" id="search-name" name="keyword" value="{{ $filters['keyword'] ?? '' }}" placeholder="{{ __('Tìm kiếm theo tên hoặc danh mục sản phẩm') }}"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black-900 dark:text-gray-100 bg-white dark:bg-gray-700">
+                </div>
+                <div class="w-full flex-1">
+                    <select id="price-range" class="rounded-lg text-black-900 dark:text-gray-100 bg-white dark:bg-gray-700">
+                        <option value="">-- Chọn khoảng giá --</option>
+                        <option value="0-500000">Dưới 500K</option>
+                        <option value="500000-1000000">500K - 1 triệu</option>
+                        <option value="1000000-3000000">1 triệu - 3 triệu</option>
+                        <option value="3000000-999999999">Trên 3 triệu</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    {{ __('Tìm kiếm') }}
+                </button>
+            </form>
+        </div>
+
         <!-- Blog Table -->
         <div class="max-w-7xl mx-auto shadow-lg border border-white rounded-lg overflow-hidden">
             <table class="w-full text-white">
@@ -27,10 +49,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="mt-6 flex justify-center">
-            <button class="px-4 py-2 bg-white text-gray-700 rounded-lg">Previous</button>
-            <button class="px-4 py-2 bg-white text-gray-700 rounded-lg ml-2">Next</button>
-        </div>
+        <div id="paginationLinks" class="flex justify-center mt-4 gap-2"></div>
     </div>
 
     @include('products.modal')
