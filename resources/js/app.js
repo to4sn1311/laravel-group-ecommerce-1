@@ -5,5 +5,3 @@ import './products'
 window.Alpine = Alpine;
 
 Alpine.start();
-
-

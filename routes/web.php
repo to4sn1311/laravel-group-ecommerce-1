@@ -5,7 +5,6 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
-use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,9 +13,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'admin.access'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin.access'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -38,6 +37,17 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:role-edit')->get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
     Route::middleware('permission:role-edit')->put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
     Route::middleware('permission:role-delete')->delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+
+    // Quản lý danh mục - sử dụng middleware permission
+    Route::middleware('permission:category-list')->get('/categories/search', [CategoryController::class, 'search'])->name('categories.search');
+    Route::middleware('permission:category-list')->get('/categories/{parentId}/search-children', [CategoryController::class, 'searchChildren'])->name('categories.search-children');
+    Route::middleware('permission:category-list')->get('/categories',[CategoryController::class,'index'])->name('categories.index');
+    Route::middleware('permission:category-create')->get('/categories/create',[CategoryController::class,'create'])->name('categories.create');
+    Route::middleware('permission:category-create')->post('/categories',[CategoryController::class,'store'])->name('categories.store');
+    Route::middleware('permission:category-list')->get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+    Route::middleware('permission:category-edit')->get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::middleware('permission:category-edit')->put('/categories/{id}',[CategoryController::class,'update'])->name('categories.update');
+    Route::middleware('permission:category-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
 // Quản lý người dùng
@@ -57,7 +67,7 @@ Route::prefix('client')->group(function () {
 
     Route::get('/shop-details', function () {
         return view('client.shop-details');
-    })->name('shop-details');
+    })->name('client.shop-details');
 
     Route::get('/blog', function () {
         return view('client.blog');
@@ -70,21 +80,12 @@ Route::prefix('client')->group(function () {
     Route::get('/login', function () {
         return view('client.auth.login');
     })->name('client.login');
+
+    // Route cho profile của người dùng thông thường
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('client.profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('client.profile.update');
+    });
 });
-Route::middleware('auth')->group(function () {
-    Route::middleware('permission:category-list')->get('/categories', [CategoryController::class, 'index'])
-        ->name('categories.index');
-});
 
-Route::middleware('permission:category-create')->get('/categories/create', [CategoryController::class, 'create'])
-    ->name('categories.create');
-
-Route::middleware('permission:role-create')->post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-Route::middleware('permission:role-list')->get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
-Route::middleware('permission:role-edit')->get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-Route::middleware('permission:role-edit')->put('/categories/{id}', [CategoryController::class, 'update'])
-    ->name('categories.update');
-Route::middleware('permission:role-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-Route::resource('products', ProductController::class);
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

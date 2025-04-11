@@ -4,25 +4,19 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class CategoryService
 {
     protected $categoryRepository;
 
-    /**
-     * UserService constructor.
-     *
-     * @param UserRepositoryInterface $userRepository
-     */
     public function __construct(CategoryRepositoryInterface $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
+
     public function getAllCategories()
     {
         return $this->categoryRepository->all();
@@ -30,19 +24,12 @@ class CategoryService
     public function getParentWithChildrenCount(){
         return $this->categoryRepository->getParentWithChildrenCount();
     }
-    /**
-     * @param int $id
-     * @return \App\Models\Category
-     */
+ 
     public function getCategoryById(int $id)
     {
         return $this->categoryRepository->find($id);
     }
 
-    /**
-     * @param array $data
-     * @return \App\Models\Category
-     */
     public function createCategory(array $data)//xl qt
     {
         if($data['parent_id']=='null'){
@@ -55,11 +42,6 @@ class CategoryService
         return $category;
     }
 
-    /**
-     * @param int $id
-     * @param array $data
-     * @return bool
-     */
     public function updateCategory(int $id, array $data)
     {
         if($data['parent_id']=='null'){
@@ -74,20 +56,29 @@ class CategoryService
         return true;
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function deleteCategory(int $id)
     {
 
-        $this->categoryRepository->delete($id);
-        return true;
+        $category = Category::find($id);
+        if (!$category) {
+            throw new Exception('Danh mục không tồn tại.');
+        }
+        $category->delete();
     }
     public function getAllParentCategories()
     {
         return $this->categoryRepository->getAllParent();
     }
+    public function getChildren($id)
+    {
+        return $this->categoryRepository->getChildren($id);
+    }
 
-
+    public function searchCategories($keyword)
+    {
+        return $this->categoryRepository->searchCategories($keyword);
+    }
+    public function searchChildCategories($keyword,$id){
+        return $this->categoryRepository->searchChildCategories($keyword,$id);
+    }
 }
