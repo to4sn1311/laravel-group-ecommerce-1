@@ -1,6 +1,76 @@
 import axios from 'axios';
+import './modules/csrf';
+import { handleImagePreview } from './modules/previewImage';
+import { resetForm } from './modules/productForm';
+import { showModal, hideModal } from './modules/modal';
+import { loadProducts } from './modules/productTable';
 
-// Tự động thêm CSRF token vào tất cả request
+document.addEventListener('DOMContentLoaded', function () {
+    $('.select2').select2({ placeholder: 'Chọn danh mục', width: '100%', allowClear: true });
+    handleImagePreview('image', 'preview-img', 'image-placeholder');
+    loadProducts();
+
+    document.getElementById('createProductBtn').addEventListener('click', function () {
+        resetForm();
+        document.getElementById('modal-title').innerText = 'Tạo sản phẩm';
+        document.getElementById('product-form').dataset.action = 'create';
+        showModal('productModal');
+    });
+
+    document.getElementById('image-preview').addEventListener('click', function () {
+        document.getElementById('image').click();
+    });
+
+
+    document.getElementById('product-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const isCreate = form.dataset.action === 'create';
+        const method = 'POST';
+        const formData = new FormData(form);
+        const productId = formData.get('id');
+        const url = isCreate ? '/products' : `/products/${productId}`;
+        if (!isCreate) {
+            formData.append('_method', 'PUT');
+        }
+
+        axios({
+            method: method,
+            url: url,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(res => {
+                if (res.data.success) {
+                    hideModal('productModal');
+                    resetForm();
+                    loadProducts();
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg';
+                    successMsg.textContent = isCreate ? 'Đã tạo sản phẩm thành công' : 'Đã cập nhật sản phẩm thành công';
+                    document.body.appendChild(successMsg);
+
+                    setTimeout(() => successMsg.remove(), 3000);
+                }
+            })
+            .catch(err => {
+                console.error('Lỗi khi lưu sản phẩm:', err);
+            })
+    });
+
+    document.getElementById('btn-close-modal').addEventListener('click', function () {
+        hideModal('productModal');
+    });
+
+
+});
+
+
+/*
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 let token = document.head.querySelector('meta[name="csrf-token"]');
@@ -58,29 +128,6 @@ function loadProducts() {
     });
 }
 
-function showModal() {
-    document.getElementById('productModal').classList.remove('hidden');
-}
-
-function hideModal() {
-    document.getElementById('productModal').classList.add('hidden');
-}
-
-function resetForm() {
-    document.getElementById('product-form').reset();
-    document.getElementById('product-id').value = '';
-    document.querySelectorAll('.error-text').forEach(el => el.innerText = '');
-    const select = $('#categories');
-    select.val([]).trigger('change'); // reset bằng Select2
-    select.find('option:selected').prop('selected', false);
-}
-
-function detachDeleteEvents() {
-    document.querySelectorAll('.edit-btn').forEach(btn => btn.replaceWith(btn.cloneNode(true)));
-    document.querySelectorAll('.delete-btn').forEach(btn => btn.replaceWith(btn.cloneNode(true)));
-    document.querySelectorAll('.show-btn').forEach(btn => btn.replaceWith(btn.cloneNode(true)));
-}
-
 function hideShowProductModal() {
     const modal = document.getElementById('showProductModal');
     if (modal) {
@@ -97,16 +144,8 @@ function showProductDetailModal() {
     }
 }
 
-$(document).ready(function () {
-    $('.select2').select2({
-        placeholder: 'Chọn danh mục',
-        width: '100%',
-        allowClear: true
-    });
-});
-
 document.addEventListener('DOMContentLoaded', function () {
-
+    $('.select2').select2({ placeholder: 'Chọn danh mục', width: '100%', allowClear: true });
     loadProducts();
 
     document.getElementById('createProductBtn').addEventListener('click', function () {
@@ -116,20 +155,42 @@ document.addEventListener('DOMContentLoaded', function () {
         showModal();
     });
 
+    document.getElementById('image-preview').addEventListener('click', function () {
+        document.getElementById('image').click();
+    });
+
+    document.getElementById('image').addEventListener('change', function () {
+        const file = this.files[0];
+        const preview = document.getElementById('preview-img');
+        const placeholder = document.getElementById('image-placeholder');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '#';
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+    });
 
     document.getElementById('product-form').addEventListener('submit', function (e) {
         e.preventDefault();
 
         const form = e.target;
         const isCreate = form.dataset.action === 'create';
-        const method = isCreate ? 'POST' : 'PUT';
+        const method = 'POST';
         const formData = new FormData(form);
-        const formObject = Object.fromEntries(formData.entries());
-        console.log('Form Data:', formObject);
+        console.log('Dữ liệu form trước gửi:', [...formData.entries()]);
         const productId = formData.get('id');
         const url = isCreate ? '/products' : `/products/${productId}`;
         if (!isCreate) {
-            formData.append('_method', 'PUT'); // ⚠️ Thêm dòng này
+            formData.append('_method', 'PUT');
         }
 
         axios({
@@ -142,9 +203,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
             .then(res => {
-                console.log('Phản hồi máy chủ:', res.data);
                 if (res.data.success) {
                     hideModal();
+                    resetForm();
                     loadProducts();
                     const successMsg = document.createElement('div');
                     successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg';
@@ -159,10 +220,13 @@ document.addEventListener('DOMContentLoaded', function () {
             })
     });
 
+    document.getElementById('btn-close-modal').addEventListener('click', function () {
+        hideModal();
+    });
+
     document.getElementById('btn-close-show-product-modal').addEventListener('click', function () {
         hideShowProductModal();
     });
-
 
 });
 
@@ -259,10 +323,9 @@ function editProduct(id) {
             if (!product) {
                 throw new Error('Không tìm thấy dữ liệu sản phẩm trong phản hồi');
             }
+            console.log(product);
 
-            // Đặt tiêu đề modal
             document.getElementById('modal-title').innerText = 'Chỉnh sửa sản phẩm';
-            // Gán dữ liệu vào form
             document.querySelector('#product-form [name="id"]').value = product.id;
             document.querySelector('#product-form [name="name"]').value = product.name;
             document.querySelector('#product-form [name="price"]').value = product.price;
@@ -271,6 +334,19 @@ function editProduct(id) {
             if (product.categories) {
                 const categoryIds = product.categories.map(c => c.id);
                 $('#product-form [name="categories[]"]').val(categoryIds).trigger('change');
+            }
+
+            const previewImg = document.getElementById('preview-img');
+            const placeholder = document.getElementById('image-placeholder');
+
+            if (product.image) {
+                previewImg.src = product.image; // đường dẫn URL ảnh từ backend
+                previewImg.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                previewImg.src = '#';
+                previewImg.classList.add('hidden');
+                placeholder.classList.remove('hidden');
             }
 
             document.getElementById('product-form').dataset.action = 'edit';
@@ -293,3 +369,37 @@ function editProduct(id) {
         });
 }
 
+function showModal() {
+    document.getElementById('productModal').classList.remove('hidden');
+}
+
+function hideModal() {
+    document.getElementById('productModal').classList.add('hidden');
+}
+
+function resetForm() {
+    document.getElementById('product-form').reset();
+    document.getElementById('product-id').value = '';
+    document.querySelectorAll('.error-text').forEach(el => el.innerText = '');
+    const select = $('#categories');
+    select.val([]).trigger('change'); // reset bằng Select2
+    select.find('option:selected').prop('selected', false);
+
+    const previewImg = document.getElementById('preview-img');
+    const placeholder = document.getElementById('image-placeholder');
+    const imageInput = document.getElementById('image');
+
+    previewImg.src = '#';
+    previewImg.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+    imageInput.value = '';
+}
+
+function detachDeleteEvents() {
+    document.querySelectorAll('.edit-btn').forEach(btn => btn.replaceWith(btn.cloneNode(true)));
+    document.querySelectorAll('.delete-btn').forEach(btn => btn.replaceWith(btn.cloneNode(true)));
+    document.querySelectorAll('.show-btn').forEach(btn => btn.replaceWith(btn.cloneNode(true)));
+}
+
+
+*/

@@ -1,7 +1,7 @@
 <div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl" style="height: 70%;">
-        <div class="modal-dialog px-4">
-            <form id="product-form" class="modal-content" data-action="create">
+    <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl" style="height: 90%;">
+        <div class="modal-dialog px-4 h-full">
+            <form id="product-form" class="modal-content relative flex flex-col h-full pb-24" enctype="multipart/form-data" data-action="create">
                 @csrf
 
                 <div class="modal-header items-center justify-items-center flex">
@@ -41,11 +41,21 @@
                             :label="__('Danh mục sản phẩm:')"
                             :options="$categories"
                             :selected="old('categories', $selectedCategories ?? [])" />
-
                     </div>
 
+                    <div class="mb-4 flex gap-4 items-start">
+                        <div id="image-preview"
+                            class="cursor-pointer w-48 h-48 border rounded-lg flex items-center justify-center bg-gray-800 relative overflow-hidden"
+                            style="width: 150px; height:150px">
+                            <img src="" alt="" id="preview-img" name="priview-img" class="hidden object-cover h-full w-full" />
+                            <span id="image-placeholder" class="text-white text-sm">Chọn ảnh</span>
+                        </div>
+                        <input id="image" name="image" type="file" accept="image/*" class="hidden" />
+                    </div>
+
+
                 </div>
-                <div class="modal-footer flex justify-between mt-4 mb-4">
+                <div class="modal-footer flex absolute bottom-0 left-0 justify-between mt-4 mb-2" style="width: 100%;">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600" id="btn-close-modal" data-bs-dismiss="modal">
                         Close
                     </button>

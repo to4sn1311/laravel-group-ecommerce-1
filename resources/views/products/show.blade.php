@@ -15,6 +15,9 @@
                 <div class="mb-4">
                     <p class="text-white"><strong>Mô tả:</strong> <span class="product-description text-gray-300"></span></p>
                 </div>
+                <div class="mb-4">
+
+                </div>
             </div>
             <div class="modal-footer flex justify-between mt-4 mb-4">
                 <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600" id="btn-close-show-product-modal" data-bs-dismiss="modal">

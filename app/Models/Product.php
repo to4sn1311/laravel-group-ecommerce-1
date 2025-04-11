@@ -30,4 +30,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Category::class);
     }
+    public function getImagePathAttribute()
+    {
+        return asset('images/upload/' . $this->image);
+    }
 }

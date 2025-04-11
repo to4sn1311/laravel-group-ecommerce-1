@@ -59,7 +59,11 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
-            $product = $this->productService->create($request->validated());
+            $data = $request->validated();
+            if ($request->hasFile('image')) {
+                $data['image'] = $request->file('image');
+            }
+            $product = $this->productService->create($data);
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Sản phẩm đã được tạo thành công.', 'data' => $product]);
         } catch (Exception $e) {
@@ -90,6 +94,7 @@ class ProductController extends Controller
                     'name' => $product->name,
                     'price' => $product->price,
                     'description' => $product->description,
+                    'image' => $product->image_path,
                     'categories' => $product->categories->map(function ($category) {
                         return [
                             'id' => $category->id,

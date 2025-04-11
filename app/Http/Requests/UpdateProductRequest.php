@@ -26,7 +26,8 @@ class UpdateProductRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'description' => 'required|string',
             'categories' => 'array',
-            'categories.*' => 'exists:categories,id'
+            'categories.*' => 'exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 
@@ -45,7 +46,11 @@ class UpdateProductRequest extends FormRequest
             'description.string' => 'Mô tả phải là chuỗi ký tự.',
 
             'categories.array' => 'Danh mục phải là một mảng.',
-            'categories.*.exists' => 'Danh mục không hợp lệ.'
+            'categories.*.exists' => 'Danh mục không hợp lệ.',
+
+            'image.image' => 'Tệp tải lên phải là hình ảnh.',
+            'image.mimes' => 'Ảnh phải có định dạng: jpeg, png, jpg.',
+            'image.max' => 'Ảnh không được vượt quá :max KB.'
         ];
     }
 }
