@@ -43,7 +43,7 @@
                             <x-input-label :value="__('Quyền')" />
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                                 @foreach($permissions->groupBy(function($item) {
-                                    return explode('-', $item->name)[0];
+                                return explode('-', $item->name)[0];
                                 }) as $group => $items)
                                 <div class="border p-4 rounded dark:border-gray-700">
                                     <h3 class="font-semibold mb-2 capitalize">{{ $group }}</h3>
@@ -77,4 +77,4 @@
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>

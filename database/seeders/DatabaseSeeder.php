@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
             CategoriesSeeder::class,
+            ProductSeeder::class,
+            CategoryProductSeeder::class
 
         ]);
 
@@ -29,7 +31,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
         ]);
-        
+
         // Gán vai trò cho người dùng đã tạo
         $this->call([
             UserRoleSeeder::class,

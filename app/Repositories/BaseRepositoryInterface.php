@@ -2,11 +2,13 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Collection;
+
 interface BaseRepositoryInterface
 {
-    public function all();
+    public function getAll();
     public function find($id);
-    public function create(array $data);
-    public function update($id, array $data);
+    public function create(array $attributes);
+    public function update($id, array $attributes);
     public function delete($id);
 }

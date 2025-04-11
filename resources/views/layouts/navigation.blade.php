@@ -63,13 +63,13 @@
                 @endif
 
                 <!-- Products Management -->
-                @if(Auth::user()->hasPermission('product-list'))
+                {{-- @if(Auth::user()->hasPermission('product-list'))--}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('products.*')">
+                    <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
                         {{ __('Products') }}
                     </x-nav-link>
                 </div>
-                @endif
+                {{-- @endif--}}
             </div>
 
             <!-- Settings Dropdown -->
@@ -103,7 +103,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -130,7 +130,7 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-
+            
             <!-- Client Site Link (Responsive) -->
             @if(Auth::user()->hasRole('User'))
             <x-responsive-nav-link :href="route('client.index')" target="_blank">
@@ -193,7 +193,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

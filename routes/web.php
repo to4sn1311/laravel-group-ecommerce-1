@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
@@ -48,6 +49,12 @@ Route::middleware(['auth', 'admin.access'])->group(function () {
     Route::middleware('permission:category-edit')->put('/categories/{id}',[CategoryController::class,'update'])->name('categories.update');
     Route::middleware('permission:category-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
+
+// Quản lý người dùng
+Route::resource('users', UserController::class);
+
+// Quản lý vai trò
+Route::resource('roles', RoleController::class);
 
 Route::prefix('client')->group(function () {
     Route::get('/', function () {

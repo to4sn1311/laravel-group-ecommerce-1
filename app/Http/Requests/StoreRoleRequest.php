@@ -12,11 +12,7 @@ class StoreRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        try {
-            return method_exists(Auth::user(), 'hasPermission') && Auth::user()->hasPermission('role-create');
-        } catch (\Exception $e) {
-            return true; // Cho phép nếu không thể kiểm tra quyền
-        }
+        return true;
     }
 
     /**

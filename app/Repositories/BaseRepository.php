@@ -14,9 +14,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all(): Collection
+    public function getAll(): Collection
     {
-        return $this->model->all();
+        return $this->model->latest()->get();
     }
 
     public function find($id)
@@ -24,20 +24,21 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->findOrFail($id);
     }
 
-    public function create(array $data)
+    public function create(array $attributes)
     {
-        return $this->model->create($data);
+        return $this->model->create($attributes);
     }
 
-    public function update($id, array $data)
+    public function update($id, array $attributes)
     {
         $record = $this->find($id);
-        $record->update($data);
+        $record->update($attributes);
         return $record;
     }
 
-    public function delete($id): int
+    public function delete($id)
     {
-        return $this->model->destroy($id);
+        $record = $this->find($id);
+        return $record->delete();
     }
 }

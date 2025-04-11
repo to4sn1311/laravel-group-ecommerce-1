@@ -12,7 +12,7 @@ class Product extends Model
         'image',
         'price',
         'stock',
-        'category_id',
+
     ];
 
     /**
@@ -29,5 +29,9 @@ class Product extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class);
+    }
+    public function getImagePathAttribute()
+    {
+        return asset('images/upload/' . $this->image);
     }
 }

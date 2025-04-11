@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Models\Category;
 use App\Repositories\BaseRepository;
 use App\Repositories\BaseRepositoryInterface;
+use App\Repositories\Eloquent\ProductRepository;
 use App\Repositories\Eloquent\RoleRepository;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Eloquent\UserRepository;
 use App\Repositories\Interfaces\UserRepositoryInterface;
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
 
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
     }
 
     /**
