@@ -36,7 +36,8 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class);
     }
-    public function scopeParent($query)
+    //scope
+    public function scopeParents($query)
     {
         return $query->whereNull('parent_id');
     }

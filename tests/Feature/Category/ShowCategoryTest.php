@@ -7,39 +7,47 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class ShowCategoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $admin;
     
+    const INVALID_ID=-1;
+    const ADMIN_PERMISSIONS = ['category-list', 'category-create', 'category-edit', 'category-delete'];
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Tạo quyền
-        $manageC = Permission::firstOrCreate(['name' => 'category-list']);
-        $manageC1 = Permission::firstOrCreate(['name' => 'category-create']);
-        $manageC2 = Permission::firstOrCreate(['name' => 'category-edit']);
-        $manageC3 = Permission::firstOrCreate(['name' => 'category-delete']);
-        // Tạo vai trò
+        $this->setUpAdminWithPermissions();
+    }
+    protected function setUpAdminWithPermissions()
+    {
+        foreach (self::ADMIN_PERMISSIONS as $perm) {
+            Permission::firstOrCreate(['name' => $perm]);
+        }
+        
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-
-        // Gán quyền cho vai trò Admin (chỉ thêm nếu chưa có)
-        $adminRole->permissions()->syncWithoutDetaching([$manageC->id, $manageC1->id, $manageC2->id, $manageC3->id]);
-
-        // Tạo tài khoản admin (nếu chưa có)
+        $adminRole->permissions()->syncWithoutDetaching(Permission::whereIn('name', self::ADMIN_PERMISSIONS)->pluck('id'));
+    
         $this->admin = User::factory()->create();
         $this->admin->roles()->syncWithoutDetaching([$adminRole->id]);
     }
     public function showCategoryViewRoute($id){
         return route('categories.show',$id);
     }
+    protected function createCategory()
+    {
+        return Category::factory()->create([
+            'name' => 'Áo abcdefch',
+            'parent_id'=>null
+        ]);
+    }
     /** @test */
     public function unauthenticated_user_can_not_show_category()
     {
-        $category = Category::factory()->create();
+        $category = $this->createCategory();
         $response = $this->get($this->showCategoryViewRoute($category->id));
         $response->assertRedirect('/login');
     }
@@ -47,7 +55,7 @@ class ShowCategoryTest extends TestCase
     public function authorized_user_can_show_category()
     {
         $this->actingAs($this->admin);
-        $category = Category::factory()->create();
+        $category = $this->createCategory();
         $response = $this->get($this->showCategoryViewRoute($category->id));
         $response->assertViewIs('categories.show');
     }
@@ -56,8 +64,8 @@ class ShowCategoryTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user);
-        $category = Category::factory()->create();
+        $category = $this->createCategory();
         $response = $this->get($this->showCategoryViewRoute($category->id));
-        $response->assertStatus(403);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 }

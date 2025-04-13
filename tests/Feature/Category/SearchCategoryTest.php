@@ -6,45 +6,53 @@ use App\Models\Category;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class SearchCategoryTest extends TestCase
 {
     protected $admin;
     
+    const INVALID_ID=-1;
+    const ADMIN_PERMISSIONS = ['category-list', 'category-create', 'category-edit', 'category-delete'];
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Tạo quyền
-        $manageC = Permission::firstOrCreate(['name' => 'category-list']);
-        $manageC1 = Permission::firstOrCreate(['name' => 'category-create']);
-        $manageC2 = Permission::firstOrCreate(['name' => 'category-edit']);
-        $manageC3 = Permission::firstOrCreate(['name' => 'category-delete']);
-        // Tạo vai trò
+        $this->setUpAdminWithPermissions();
+    }
+    protected function setUpAdminWithPermissions()
+    {
+        foreach (self::ADMIN_PERMISSIONS as $perm) {
+            Permission::firstOrCreate(['name' => $perm]);
+        }
+        
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-
-        // Gán quyền cho vai trò Admin (chỉ thêm nếu chưa có)
-        $adminRole->permissions()->syncWithoutDetaching([$manageC->id, $manageC1->id, $manageC2->id, $manageC3->id]);
-
-        // Tạo tài khoản admin (nếu chưa có)
+        $adminRole->permissions()->syncWithoutDetaching(Permission::whereIn('name', self::ADMIN_PERMISSIONS)->pluck('id'));
+    
         $this->admin = User::factory()->create();
         $this->admin->roles()->syncWithoutDetaching([$adminRole->id]);
     }
+    protected function createCategories(array $names, $parentId = null)
+    {
+        foreach ($names as $name) {
+            Category::firstOrCreate([
+                'name' => $name,
+                'parent_id' => $parentId
+            ]);
+        }
+    }
+
     /** @test */
     public function user_can_search_categories()
     {
         $this->actingAs($this->admin);
         // Tạo danh mục mẫu
-        Category::firstOrCreate(['name' => 'Áo Thun1']);
-        Category::firstOrCreate(['name' => 'Áo Sơ Mi1']);
+        $this->createCategories(['Áo Thun1', 'Áo Sơ Mi1']);
 
         // Gửi request tìm kiếm với từ khóa "Áo"
         $response = $this->getJson(route('categories.search', ['keyword' => 'Áo']));
 
-        $response->assertStatus(200)
+        $response->assertStatus(Response::HTTP_OK)
         ->assertJsonStructure([
             'categories' => [['id', 'name']],
             'pagination'
@@ -52,23 +60,20 @@ class SearchCategoryTest extends TestCase
         // Kiểm tra danh sách categories không rỗng
         $this->assertGreaterThan(0, count($response['categories']));
     }
-//
     /** @test */
     public function user_can_search_children_categories()
     {
         $this->actingAs($this->admin);
         // Tạo danh mục cha và danh mục con
         $parent = Category::firstOrCreate(['name' => 'Áo test']);
-        Category::firstOrCreate(['name' => 'Áo Vải', 'parent_id' => $parent->id]);
-        Category::firstOrCreate(['name' => 'Áo Da', 'parent_id' => $parent->id]);
-
-        // Gửi request tìm kiếm danh mục con của "Thời Trang" với từ khóa "Giày"
+        $this->createCategories(['Áo Vải', 'Áo Da'], $parent->id);
+        // Gửi request tìm kiếm danh mục con của "Áo" với từ khóa "Áo"
         $response = $this->getJson(route('categories.search-children', [
             'parentId' => $parent->id,
             'keyword' => 'Áo'
         ]));
 
-        $response->assertStatus(200)
+        $response->assertStatus(Response::HTTP_OK)
         ->assertJsonStructure([
             'categories' => [['id', 'name']],
             'pagination'
