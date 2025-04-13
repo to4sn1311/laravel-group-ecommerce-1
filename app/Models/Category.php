@@ -44,7 +44,6 @@ class Category extends Model
     {
         return $query->whereNotNull('parent_id');
     }
-
     public function scopeSearchByName($query, $keyword)
     {
         return $query->where('name', 'like', "%$keyword%");

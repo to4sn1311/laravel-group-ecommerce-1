@@ -18,26 +18,22 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     }
     public function getParentWithChildrenCount(){
         return $this->model->parent()
-        ->withCount('children')
-        ->paginate(10);
+        ->withCount('children');
     } 
     public function getChildren($id){
         return $this->model->child()
-        ->ofParent($id)
-        ->paginate(10);
+        ->ofParent($id);
     } 
     public function searchCategories($keyword)
     {
         return $this->model->SearchByName($keyword)
         ->parent()
-        ->withCount('children')
-        ->paginate(10);
+        ->withCount('children');
     }
     public function searchChildCategories($keyword,$id)
     {
         return $this->model->child()
         ->ofParent($id)
-        ->searchByName($keyword)
-        ->paginate(10);
+        ->searchByName($keyword);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class CategoryService
 {
+    const PER_PAGE = 10;
     protected $categoryRepository;
 
     public function __construct(CategoryRepositoryInterface $categoryRepository)
@@ -16,13 +17,8 @@ class CategoryService
         $this->categoryRepository = $categoryRepository;
     }
 
-
-    public function getAllCategories()
-    {
-        return $this->categoryRepository->all();
-    }
     public function getParentWithChildrenCount(){
-        return $this->categoryRepository->getParentWithChildrenCount();
+        return $this->categoryRepository->getParentWithChildrenCount()->paginate(self::PER_PAGE);
     }
  
     public function getCategoryById(int $id)
@@ -71,14 +67,14 @@ class CategoryService
     }
     public function getChildren($id)
     {
-        return $this->categoryRepository->getChildren($id);
+        return $this->categoryRepository->getChildren($id)->paginate(self::PER_PAGE);
     }
 
     public function searchCategories($keyword)
     {
-        return $this->categoryRepository->searchCategories($keyword);
+        return $this->categoryRepository->searchCategories($keyword)->paginate(self::PER_PAGE);
     }
     public function searchChildCategories($keyword,$id){
-        return $this->categoryRepository->searchChildCategories($keyword,$id);
+        return $this->categoryRepository->searchChildCategories($keyword,$id)->paginate(self::PER_PAGE);
     }
 }
