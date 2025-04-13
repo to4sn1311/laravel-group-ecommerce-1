@@ -14,28 +14,30 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         $this->model = $model;
     }
     public function getAllParent(){
-        return $this->model->whereNull('parent_id')->get();
+        return $this->model->parent()->get();
     }
     public function getParentWithChildrenCount(){
-        return $this->model->whereNull('parent_id')
+        return $this->model->parent()
         ->withCount('children')
         ->paginate(10);
     } 
     public function getChildren($id){
-        return $this->model->whereNotNull('parent_id')->where('parent_id', $id) ->paginate(10);
+        return $this->model->child()
+        ->ofParent($id)
+        ->paginate(10);
     } 
     public function searchCategories($keyword)
     {
-        return Category::where('name', 'like', "%$keyword%")
-            ->whereNull('parent_id')
-            ->withCount('children')
-            ->paginate(10);
+        return $this->model->SearchByName($keyword)
+        ->parent()
+        ->withCount('children')
+        ->paginate(10);
     }
     public function searchChildCategories($keyword,$id)
     {
-        return Category::where('parent_id', $id)
-        ->where('name', 'like', "%$keyword%")
+        return $this->model->child()
+        ->ofParent($id)
+        ->searchByName($keyword)
         ->paginate(10);
     }
-
 }

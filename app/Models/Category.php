@@ -36,8 +36,21 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class);
     }
+    public function scopeParent($query)
+    {
+        return $query->whereNull('parent_id');
+    }
+    public function scopeChild($query)
+    {
+        return $query->whereNotNull('parent_id');
+    }
 
-    /**
-     * Get the products directly assigned to this category.
-     */
+    public function scopeSearchByName($query, $keyword)
+    {
+        return $query->where('name', 'like', "%$keyword%");
+    }
+    public function scopeOfParent($query, $parentId)
+    {
+        return $query->where('parent_id', $parentId);
+    }
 }

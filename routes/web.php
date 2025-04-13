@@ -87,5 +87,5 @@ Route::prefix('client')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update'])->name('client.profile.update');
     });
 });
-
+Route::resource('products', ProductController::class);
 require __DIR__.'/auth.php';
