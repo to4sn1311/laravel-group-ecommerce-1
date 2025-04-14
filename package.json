@@ -20,6 +20,7 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "bootstrap": "^5.3.5",
-        "kill-port": "^2.0.1"
+        "kill-port": "^2.0.1",
+        "lodash.debounce": "^4.0.8"
     }
 }
