@@ -6,7 +6,7 @@ use App\Models\Category;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class CategoryMenuLevel implements ValidationRule
+class CreateCategoryMenuLevel implements ValidationRule
 {
     /**
      * Kiểm tra giới hạn danh mục cấp 2.
@@ -17,7 +17,7 @@ class CategoryMenuLevel implements ValidationRule
     {
         // Cho phép giá trị null (không có parent_id)
         if ($value === 'null') {
-        return;
+            return;
         }
 
         // Kiểm tra nếu có parent_id

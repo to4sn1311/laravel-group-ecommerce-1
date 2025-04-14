@@ -8,11 +8,13 @@ use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class ShowCategoryTest extends TestCase
-{    
+{
+
     const INVALID_ID=-1;
   
-    public function showCategoryViewRoute($id){
-        return route('categories.show',$id);
+    public function showCategoryViewRoute($id)
+    {
+        return route('categories.show', $id);
     }
     protected function createCategory()
     {

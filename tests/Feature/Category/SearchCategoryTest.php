@@ -49,7 +49,7 @@ class SearchCategoryTest extends TestCase
             'pagination'
         ]);
         // Kiểm tra danh sách categories không rỗng
-        $this->assertGreaterThan(0, count($response['categories']));         
+        $this->assertGreaterThan(0, count($response['categories']));
     }
 
     protected function createAdmin()

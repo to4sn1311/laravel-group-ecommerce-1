@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\CategoryMenuLevel;
+use App\Rules\CreateCategoryMenuLevel;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateCategoryRequest extends FormRequest
@@ -24,7 +24,7 @@ class CreateCategoryRequest extends FormRequest
     {
         return [
              'name'=>'required|unique:categories',
-             'parent_id' => ['nullable', new CategoryMenuLevel()],
+             'parent_id' => ['nullable', new CreateCategoryMenuLevel()],
             ];
     }
 }

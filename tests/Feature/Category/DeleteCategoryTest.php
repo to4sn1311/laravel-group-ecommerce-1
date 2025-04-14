@@ -18,7 +18,7 @@ class DeleteCategoryTest extends TestCase
         $category = $this->createCategory();
         $response = $this->delete($this->getDeleteCategoryRoute($category->id));
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseMissing('categories',['id' => $category->id]);
+        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
 
     /** @test */
@@ -55,7 +55,7 @@ class DeleteCategoryTest extends TestCase
 
     public function getDeleteCategoryRoute($id)
     {
-        return route('categories.destroy',$id);
+        return route('categories.destroy', $id);
     }
 
     protected function createAdmin()

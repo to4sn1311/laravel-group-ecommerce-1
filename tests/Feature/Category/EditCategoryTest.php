@@ -17,9 +17,9 @@ class EditCategoryTest extends TestCase
         $this->actingAs($this->createAdmin());
         $category=$this->createCategory();
         $dataUpdate = $this->validData();
-        $response = $this->put($this->updateCategoryRoute($category->id),$dataUpdate);
+        $response = $this->put($this->updateCategoryRoute($category->id), $dataUpdate);
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas('categories',$dataUpdate);
+        $this->assertDatabaseHas('categories', $dataUpdate);
     }
 
     /** @test */
@@ -29,7 +29,7 @@ class EditCategoryTest extends TestCase
         $this->actingAs($user);
         $category=$this->createCategory();
         $dataUpdate = $this->validData();
-        $response = $this->put($this->updateCategoryRoute($category->id),$dataUpdate);
+        $response = $this->put($this->updateCategoryRoute($category->id), $dataUpdate);
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -38,7 +38,7 @@ class EditCategoryTest extends TestCase
     {
         $category=$this->createCategory();
         $dataUpdate = $this->validData();
-        $response = $this->put($this->updateCategoryRoute($category->id),$dataUpdate);
+        $response = $this->put($this->updateCategoryRoute($category->id), $dataUpdate);
         $response->assertRedirect('/login');
     }
 
@@ -117,13 +117,13 @@ class EditCategoryTest extends TestCase
     }
 
     public function updateCategoryRoute($id)
-    { 
+    {
         return route('categories.update', $id);
     }
 
     public function editCategoryRoute($id)
     {
-        return route('categories.edit',$id);
+        return route('categories.edit', $id);
     }
 
     private function validData(array $overrides = []): array

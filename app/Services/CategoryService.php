@@ -15,7 +15,8 @@ class CategoryService
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function getParentWithChildrenCount(){
+    public function getParentWithChildrenCount()
+    {
         return $this->categoryRepository->getParentWithChildrenCount()->paginate(self::PER_PAGE);
     }
  
@@ -64,7 +65,8 @@ class CategoryService
         return $this->categoryRepository->searchCategories($keyword)->paginate(self::PER_PAGE);
     }
 
-    public function searchChildCategories($keyword,$id){
-        return $this->categoryRepository->searchChildCategories($keyword,$id)->paginate(self::PER_PAGE);
+    public function searchChildCategories($keyword, $id)
+    {
+        return $this->categoryRepository->searchChildCategories($keyword, $id)->paginate(self::PER_PAGE);
     }
 }

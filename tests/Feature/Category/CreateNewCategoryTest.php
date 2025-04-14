@@ -8,7 +8,8 @@ use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class CreateNewCategoryTest extends TestCase
-{       
+{
+
     const INVALID_ID=-1;
     
     /** @test */
@@ -16,9 +17,9 @@ class CreateNewCategoryTest extends TestCase
     {
         $this->actingAs($this->createAdmin());
         $category=$this->makeCategory();
-        $response = $this->post($this->getCreateCategoryRoute(),$category);
+        $response = $this->post($this->getCreateCategoryRoute(), $category);
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas('categories',$category);
+        $this->assertDatabaseHas('categories', $category);
     }
     /** @test */
     public function unauthorized_user_cannot_create_category()
@@ -26,14 +27,14 @@ class CreateNewCategoryTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
         $category=$this->makeCategory();
-        $response = $this->post($this->getCreateCategoryRoute(),$category);
+        $response = $this->post($this->getCreateCategoryRoute(), $category);
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
     /** @test */
     public function unauthenticated_user_can_not_create_category()
     {
         $category=$this->makeCategory();
-        $response = $this->post($this->getCreateCategoryRoute(),$category);
+        $response = $this->post($this->getCreateCategoryRoute(), $category);
         $response->assertRedirect('/login');
     }
     /** @test */
@@ -85,7 +86,7 @@ class CreateNewCategoryTest extends TestCase
     }
 
     public function getCreateCategoryRoute()
-    { 
+    {
         return route('categories.store');
     }
 
@@ -93,14 +94,13 @@ class CreateNewCategoryTest extends TestCase
     {
         return route('categories.create');
     }
-
 }
 
 
 
 /*
 const ADMIN_PERMISSIONS = ['category-list', 'category-create', 'category-edit', 'category-delete'];
-    
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -111,10 +111,10 @@ const ADMIN_PERMISSIONS = ['category-list', 'category-create', 'category-edit', 
         foreach (self::ADMIN_PERMISSIONS as $perm) {
             Permission::firstOrCreate(['name' => $perm]);
         }
-        
+
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
         $adminRole->permissions()->syncWithoutDetaching(Permission::whereIn('name', self::ADMIN_PERMISSIONS)->pluck('id'));
-    
+
         $this->admin = User::factory()->create();
         $this->admin->roles()->syncWithoutDetaching([$adminRole->id]);
     }*/

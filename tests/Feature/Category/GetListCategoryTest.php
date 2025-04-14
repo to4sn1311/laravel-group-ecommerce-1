@@ -25,7 +25,7 @@ class GetListCategoryTest extends TestCase
     public function unauthorized_user_can_get_all_category()
     {
         $user = User::factory()->create();
-        $this->actingAs($user);        
+        $this->actingAs($user);
         $this->createCategory();
         $response = $this->getCategoryIndex();
         $response->assertStatus(Response::HTTP_FORBIDDEN);
