@@ -77,8 +77,8 @@ class ProductService
         return $this->productRepository->getAllWithCategories();
     }
 
-    public function search(array $filters)
+    public function search(array $filters, int $perPage = 5)
     {
-        return $this->productRepository->search($filters);
+        return $this->productRepository->search($filters, $perPage);
     }
 }
