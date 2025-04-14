@@ -14,11 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(loadProducts, 300);
     });
-    attachPaginationEvents();
     document.getElementById('price-range').addEventListener('change', function () {
-        loadProducts();
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(loadProducts, 300);
     });
     loadProducts('/products');
+    attachPaginationEvents();
 
     document.getElementById('createProductBtn').addEventListener('click', function () {
         resetForm();
