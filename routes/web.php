@@ -41,12 +41,12 @@ Route::middleware(['auth', 'admin.access'])->group(function () {
     // Quản lý danh mục - sử dụng middleware permission
     Route::middleware('permission:category-list')->get('/categories/search', [CategoryController::class, 'search'])->name('categories.search');
     Route::middleware('permission:category-list')->get('/categories/{parentId}/search-children', [CategoryController::class, 'searchChildren'])->name('categories.search-children');
-    Route::middleware('permission:category-list')->get('/categories',[CategoryController::class,'index'])->name('categories.index');
-    Route::middleware('permission:category-create')->get('/categories/create',[CategoryController::class,'create'])->name('categories.create');
-    Route::middleware('permission:category-create')->post('/categories',[CategoryController::class,'store'])->name('categories.store');
+    Route::middleware('permission:category-list')->get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::middleware('permission:category-create')->get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::middleware('permission:category-create')->post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::middleware('permission:category-list')->get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
     Route::middleware('permission:category-edit')->get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-    Route::middleware('permission:category-edit')->put('/categories/{id}',[CategoryController::class,'update'])->name('categories.update');
+    Route::middleware('permission:category-edit')->put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
     Route::middleware('permission:category-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
@@ -88,7 +88,6 @@ Route::prefix('client')->group(function () {
     });
 });
 
-<<<<<<< HEAD
 Route::middleware('permission:category-create')->get('/categories/create', [CategoryController::class, 'create'])
     ->name('categories.create');
 
@@ -106,10 +105,4 @@ Route::middleware('permission:product-edit')->get('/products/{id}/edit', [Produc
 Route::middleware('permission:product-edit')->put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 Route::middleware('permission:product-delete')->delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-
-// Route::resource('products', ProductController::class);
-
 require __DIR__ . '/auth.php';
-=======
-require __DIR__.'/auth.php';
->>>>>>> develop
