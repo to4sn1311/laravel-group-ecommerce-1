@@ -48,13 +48,16 @@ Route::middleware(['auth', 'admin.access'])->group(function () {
     Route::middleware('permission:category-edit')->get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::middleware('permission:category-edit')->put('/categories/{id}',[CategoryController::class,'update'])->name('categories.update');
     Route::middleware('permission:category-delete')->delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    // Quản lý sản phẩm - sử dụng middleware permission
+    Route::middleware('permission:product-list')->get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::middleware('permission:product-create')->get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::middleware('permission:product-create')->post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::middleware('permission:product-list')->get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+    Route::middleware('permission:product-edit')->get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::middleware('permission:product-edit')->put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+    Route::middleware('permission:product-delete')->delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
-
-// Quản lý người dùng
-Route::resource('users', UserController::class);
-
-// Quản lý vai trò
-Route::resource('roles', RoleController::class);
 
 Route::prefix('client')->group(function () {
     Route::get('/', function () {
