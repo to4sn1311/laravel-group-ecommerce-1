@@ -18,9 +18,10 @@ interface UserRepositoryInterface
      * 
      * @param string|null $search
      * @param int $perPage
+     * @param string|array|null $roles
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function search($search = null, $perPage = 10);
+    public function search($search = null, $roles = null, $perPage = 10);
     
     /**
      * Lấy một người dùng theo ID
