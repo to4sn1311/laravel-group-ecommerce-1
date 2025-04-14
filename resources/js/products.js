@@ -4,6 +4,7 @@ import { handleImagePreview } from './modules/previewImage';
 import { resetForm } from './modules/productForm';
 import { showModal, hideModal } from './modules/modal';
 import { loadProducts } from './modules/productTable';
+import { attachPaginationEvents } from './modules/pagination';
 
 document.addEventListener('DOMContentLoaded', function () {
     $('.select2').select2({ placeholder: 'Chọn danh mục', width: '100%', allowClear: true });
@@ -13,7 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(loadProducts, 300);
     });
-    document.getElementById('price-range').addEventListener('change', loadProducts);
+    attachPaginationEvents();
+    document.getElementById('price-range').addEventListener('change', function () {
+        loadProducts();
+    });
     loadProducts('/products');
 
     document.getElementById('createProductBtn').addEventListener('click', function () {

@@ -26,21 +26,15 @@ class ProductController extends Controller
                 'keyword' => $request->input('keyword'),
                 'price_range' => $request->input('price_range')
             ];
-            $products = $this->productService->search($filters);
+            $products = $this->productService->search($filters, 5);
             $categories = Category::select('id', 'name')->get();
             if (request()->ajax()) {
                 return response()->json([
                     'products' => $products->items(),
-                    'pagination' => [
-                        'current_page' => $products->currentPage(),
-                        'last_page' => $products->lastPage(),
-                        'next_page_url' => $products->nextPageUrl(),
-                        'prev_page_url' => $products->previousPageUrl(),
-                        'total' => $products->total(),
-                    ],
+                    'pagination' => $products->appends($filters)->links('pagination::tailwind')->toHtml()
                 ]);
             }
-            return view('products.index', compact('products', 'categories'));
+            return view('products.index', compact('products', 'categories', 'filters'));
         } catch (\Exception $e) {
             if (request()->ajax()) {
                 return response()->json([
