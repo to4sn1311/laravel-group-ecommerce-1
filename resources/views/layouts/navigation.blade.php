@@ -16,6 +16,60 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
+                <!-- Client Site Link -->
+                @if(Auth::user()->hasRole('User'))
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('client.index')" target="_blank">
+                        {{ __('Client Site') }} <span class="text-xs ml-1">↗</span>
+                    </x-nav-link>
+                </div>
+                @endif
+
+                <!-- Users Management -->
+                @if(Auth::user()->hasPermission('user-list'))
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                        {{ __('Users') }}
+                    </x-nav-link>
+                </div>
+                @endif
+
+                <!-- Roles Management -->
+                @if(Auth::user()->hasPermission('role-list'))
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
+                        {{ __('Roles') }}
+                    </x-nav-link>
+                </div>
+                @endif
+
+                <!-- Permissions Management -->
+                <!-- @if(Auth::user()->hasPermission('permission-list'))
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('permissions.*')">
+                        {{ __('Permissions') }}
+                    </x-nav-link>
+                </div>
+                @endif -->
+
+                <!-- Categories Management -->
+                @if(Auth::user()->hasPermission('category-list'))
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
+                        {{ __('Categories') }}
+                    </x-nav-link>
+                </div>
+                @endif
+
+                <!-- Products Management -->
+                {{-- @if(Auth::user()->hasPermission('product-list'))--}}
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
+                        {{ __('Products') }}
+                    </x-nav-link>
+                </div>
+                {{-- @endif--}}
             </div>
 
             <!-- Settings Dropdown -->
@@ -34,16 +88,22 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        @if(Auth::user()->hasRole('User') && Auth::user()->roles->count() === 1)
+                        <x-dropdown-link :href="route('client.profile.edit')">
+                            {{ __('Profile') }}
+                        </x-dropdown-link>
+                        @else
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+                        @endif
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -70,6 +130,44 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            
+            <!-- Client Site Link (Responsive) -->
+            @if(Auth::user()->hasRole('User'))
+            <x-responsive-nav-link :href="route('client.index')" target="_blank">
+                {{ __('Client Site') }} <span class="text-xs ml-1">↗</span>
+            </x-responsive-nav-link>
+            @endif
+
+            <!-- Responsive menu items -->
+            @if(Auth::user()->hasPermission('user-list'))
+            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                {{ __('Users') }}
+            </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->hasPermission('role-list'))
+            <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
+                {{ __('Roles') }}
+            </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->hasPermission('permission-list'))
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('permissions.*')">
+                {{ __('Permissions') }}
+            </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->hasPermission('category-list'))
+            <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
+                {{ __('Categories') }}
+            </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->hasPermission('product-list'))
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('products.*')">
+                {{ __('Products') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
@@ -80,16 +178,22 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                @if(Auth::user()->hasRole('User') && Auth::user()->roles->count() === 1)
+                <x-responsive-nav-link :href="route('client.profile.edit')">
+                    {{ __('Profile') }}
+                </x-responsive-nav-link>
+                @else
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+                @endif
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

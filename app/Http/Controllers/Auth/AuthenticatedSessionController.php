@@ -28,6 +28,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Kiểm tra role của người dùng và chuyển hướng phù hợp
+        $user = Auth::user();
+
+        // Nếu người dùng chỉ có role User và không có role nào khác
+        if ($user->roles->count() === 1 && $user->hasRole('User')) {
+            return redirect()->intended(route('client.index', absolute: false));
+        }
+
+        // Nếu có các role khác, chuyển hướng đến admin dashboard
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
