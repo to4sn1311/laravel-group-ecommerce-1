@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Rules\CategoryMenuLevel;
 use Illuminate\Foundation\Http\FormRequest;
-use phpDocumentor\Reflection\Types\Nullable;
 
 class CreateCategoryRequest extends FormRequest
 {
@@ -23,7 +22,6 @@ class CreateCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
              'name'=>'required|unique:categories',
              'parent_id' => ['nullable', new CategoryMenuLevel()],

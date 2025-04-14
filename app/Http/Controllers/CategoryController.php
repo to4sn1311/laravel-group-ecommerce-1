@@ -16,6 +16,7 @@ class CategoryController extends Controller
     {
         $this->categoryService = $categoryService;
     }
+
     public function index()
     {
         try {
@@ -25,6 +26,7 @@ class CategoryController extends Controller
             return redirect()->back()->with('error', 'Lỗi khi tải danh sách danh mục.');
         }
     }
+
     public function create()
     {
         try {
@@ -34,6 +36,7 @@ class CategoryController extends Controller
             return redirect()->back()->with('error', 'Lỗi: '.$e->getMessage());
         }
     }
+
     public function store(CreateCategoryRequest $request)
     {
         try {
@@ -43,6 +46,7 @@ class CategoryController extends Controller
             return response()->json(['message' => $e->getMessage()]);
         }
     }
+    
     public function edit($id)
     {
         try {
@@ -53,6 +57,7 @@ class CategoryController extends Controller
             return redirect()->route('categories.index')->with('error', 'Không tìm thấy danh mục.');
         }
     }
+
     public function update(UpdateCategoryRequest $request, $id)
     {
         try {
@@ -62,6 +67,7 @@ class CategoryController extends Controller
             return response()->json(['message' => $e->getMessage()]);
         }
     }
+
     public function destroy($id)
     {
         try {
@@ -71,6 +77,10 @@ class CategoryController extends Controller
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * Lấy danh sách tất cả các danh mục.
+     */
     public function show($id)
     {
         try {
@@ -81,19 +91,28 @@ class CategoryController extends Controller
             return redirect()->route('categories.index')->with('error', 'Không tìm thấy danh mục.');
         }
     }
+
+    /**
+     * Tìm kiếm danh mục cấp 1
+     */
     public function search(Request $request)
     {
         $keyword = $request->input('keyword');
         $categories = $this->categoryService->searchCategories($keyword);
-        return response()->json([
-            'categories' => $categories->items(),
-            'pagination' => (string) $categories->links()
-        ]);
+        return $this->jsonPaginatedResponse($categories);
     }
-    public function searchChildren(Request $request, $parentId)
+
+    /**
+     * Tìm kiếm danh mục cấp 2
+     */    public function searchChildren(Request $request, $parentId)
     {
         $keyword = $request->input('keyword');
         $categories = $this->categoryService->searchChildCategories($keyword,$parentId);
+        return $this->jsonPaginatedResponse($categories);
+    }
+
+    private function jsonPaginatedResponse($categories)
+    {
         return response()->json([
             'categories' => $categories->items(),
             'pagination' => (string) $categories->links()

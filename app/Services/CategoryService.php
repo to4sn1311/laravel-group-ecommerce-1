@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Category;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
-use Exception;
 
 class CategoryService
 {
     const PER_PAGE = 10;
+    
     protected $categoryRepository;
 
     public function __construct(CategoryRepositoryInterface $categoryRepository)
