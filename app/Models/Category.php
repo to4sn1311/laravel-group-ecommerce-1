@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
         'parent_id',
@@ -38,6 +39,34 @@ class Category extends Model
     }
 
     /**
-     * Get the products directly assigned to this category.
+     * scope danh mục cấp 1
      */
+    public function scopeParents($query)
+    {
+        return $query->whereNull('parent_id');
+    }
+
+    /**
+     * scope danh mục cấp 2
+     */
+    public function scopeChild($query)
+    {
+        return $query->whereNotNull('parent_id');
+    }
+
+    /**
+     * scope tìm kiếm theo tên
+     */
+    public function scopeSearchByName($query, $keyword)
+    {
+        return $query->where('name', 'like', "%$keyword%");
+    }
+
+    /**
+     * scope tìm kiếm theo id danh mục cấp 1
+     */
+    public function scopeOfParent($query, $parentId)
+    {
+        return $query->where('parent_id', $parentId);
+    }
 }

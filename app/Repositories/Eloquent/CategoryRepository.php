@@ -9,33 +9,45 @@ use App\Repositories\Interfaces\CategoryRepositoryInterface;
 class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
     protected $model;
+
     public function __construct(Category $model)
     {
         $this->model = $model;
     }
-    public function getAllParent(){
-        return $this->model->whereNull('parent_id')->get();
-    }
-    public function getParentWithChildrenCount(){
-        return $this->model->whereNull('parent_id')
-        ->withCount('children')
-        ->paginate(10);
-    } 
-    public function getChildren($id){
-        return $this->model->whereNotNull('parent_id')->where('parent_id', $id) ->paginate(10);
-    } 
-    public function searchCategories($keyword)
+
+    public function getAllParent()
     {
-        return Category::where('name', 'like', "%$keyword%")
-            ->whereNull('parent_id')
-            ->withCount('children')
-            ->paginate(10);
-    }
-    public function searchChildCategories($keyword,$id)
-    {
-        return Category::where('parent_id', $id)
-        ->where('name', 'like', "%$keyword%")
-        ->paginate(10);
+        return $this->model->parents()->get();
     }
 
+    public function getParentWithChildrenCount()
+    {
+        return $this->model->parents()
+        ->withCount('children');
+    }
+
+    public function getChildren($id)
+    {
+        return $this->model->child()
+        ->ofParent($id);
+    }
+
+    public function searchCategories($keyword)
+    {
+        return $this->model->SearchByName($keyword)
+        ->parents()
+        ->withCount('children');
+    }
+    
+    public function searchChildCategories($keyword, $id)
+    {
+        return $this->model->child()
+        ->ofParent($id)
+        ->searchByName($keyword);
+    }
+    public function isParent($id)
+    {
+        return Category::where('parent_id', $id)->exists();
+    }
+    
 }
