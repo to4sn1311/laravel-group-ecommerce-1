@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Response;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ShowCategoryTest extends TestCase
@@ -24,7 +25,7 @@ class ShowCategoryTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function unauthenticated_user_can_not_show_category()
     {
         $category = $this->createCategory();
@@ -32,7 +33,7 @@ class ShowCategoryTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    /** @test */
+    #[Test]
     public function authorized_user_can_show_category()
     {
         $this->actingAs($this->createAdmin());
@@ -41,7 +42,7 @@ class ShowCategoryTest extends TestCase
         $response->assertViewIs('categories.show');
     }
     
-    /** @test */
+    #[Test]
     public function unthorized_user_can_not_show_category()
     {
         $user = User::factory()->create();

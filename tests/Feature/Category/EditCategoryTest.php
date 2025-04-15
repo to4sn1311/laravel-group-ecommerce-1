@@ -5,13 +5,14 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Response;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class EditCategoryTest extends TestCase
 {
     const INVALID_ID=-1;
 
-    /** @test */
+    #[Test]
     public function authorized_user_can_edit_category()
     {
         $this->actingAs($this->createAdmin());
@@ -22,7 +23,7 @@ class EditCategoryTest extends TestCase
         $this->assertDatabaseHas('categories', $dataUpdate);
     }
 
-    /** @test */
+    #[Test]
     public function unauthorized_user_can_not_edit_category()
     {
         $user = User::factory()->create();
@@ -33,7 +34,7 @@ class EditCategoryTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    /** @test */
+    #[Test]
     public function unauthenticated_user_can_not_edit_category()
     {
         $category=$this->createCategory();
@@ -42,7 +43,7 @@ class EditCategoryTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    /** @test */
+    #[Test]
     public function authenticated_user_can_not_edit_category_if_name_field_is_null()
     {
         $this->actingAs($this->createAdmin());
@@ -55,7 +56,7 @@ class EditCategoryTest extends TestCase
         $response->assertSessionHasErrors(['name']);
     }
 
-    /** @test */
+    #[Test]
     public function authenticated_user_can_not_edit_category_if_parent_id_not_exists()
     {
         $this->actingAs($this->createAdmin());
@@ -68,7 +69,7 @@ class EditCategoryTest extends TestCase
         $response->assertSessionHasErrors(['parent_id']);
     }
 
-    /** @test */
+    #[Test]
     public function authenticated_user_can_view_edit_category_form()
     {
         $this->actingAs($this->createAdmin());
@@ -77,7 +78,7 @@ class EditCategoryTest extends TestCase
         $response->assertViewIs('categories.edit');
     }
 
-    /** @test */
+    #[Test]
     public function authenticated_user_can_see_name_required_text_if_validate_error()
     {
         $this->actingAs($this->createAdmin());
@@ -90,7 +91,7 @@ class EditCategoryTest extends TestCase
         $response->assertRedirect($this->editCategoryRoute($category->id));
     }
 
-    /** @test */
+    #[Test]
     public function authenticated_user_can_see_parent_id_not_exists_text_if_validate_error()
     {
         $this->actingAs($this->createAdmin());
@@ -103,7 +104,7 @@ class EditCategoryTest extends TestCase
         $response->assertRedirect($this->editCategoryRoute($category->id));
     }
 
-    /** @test */
+    #[Test]
     public function unauthenticated_user_can_not_see_edit_category_form_view()
     {
         $category=$this->createCategory();

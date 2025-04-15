@@ -5,14 +5,15 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Response;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class GetListCategoryTest extends TestCase
 {
     const INVALID_ID=-1;
 
-    /** @test */
-    public function authorized_user_can_get_all_category()
+    #[Test]
+    public function authorized_user_can_get_all_categories()
     {
         $this->actingAs($this->createAdmin());
         $this->createCategory();
@@ -21,8 +22,8 @@ class GetListCategoryTest extends TestCase
         $response->assertViewIs('categories.index');
     }
 
-    /** @test */
-    public function unauthorized_user_can_get_all_category()
+    #[Test]
+    public function unauthorized_user_can_not_get_all_categories()
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -31,8 +32,8 @@ class GetListCategoryTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    /** @test */
-    public function unauthenticated_user_can_get_all_category()
+    #[Test]
+    public function unauthenticated_user_can_get_all_categories()
     {
         $this->createCategory();
         $response = $this->getCategoryIndex();
