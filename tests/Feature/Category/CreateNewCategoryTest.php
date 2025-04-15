@@ -66,6 +66,16 @@ class CreateNewCategoryTest extends TestCase
     }
 
     #[Test]
+    public function authenticated_user_can_not_create_category_with_duplicate_name()
+    {
+        $this->actingAs($this->createAdmin());
+        $category= $this->createCategory();
+        $duplicateCategory = $this->makeCategory(['name' =>$category['name']]);
+        $response = $this->post($this->getCreateCategoryRoute(), $duplicateCategory);
+        $response->assertSessionHasErrors(['name']);
+    }
+
+    #[Test]
     public function authenticated_user_can_not_create_category_if_parent_id_not_exists()
     {
         $this->actingAs($this->createAdmin());
@@ -86,6 +96,11 @@ class CreateNewCategoryTest extends TestCase
     protected function makeCategory(array $overrides = [])
     {
         return Category::factory()->make($overrides)->toArray();
+    }
+
+    protected function createCategory(array $overrides = [])
+    {
+        return Category::factory()->create($overrides)->toArray();
     }
 
     protected function createAdmin()

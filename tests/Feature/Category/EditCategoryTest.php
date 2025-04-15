@@ -57,6 +57,20 @@ class EditCategoryTest extends TestCase
     }
 
     #[Test]
+    public function authenticated_user_can_not_edit_category_with_duplicate_name()
+    {
+        $this->actingAs($this->createAdmin());
+        $existingCategory = $this->createCategory();
+        $categoryToEdit = $this->createCategory();
+        $data = [
+            'name' => $existingCategory->name,
+            'parent_id' => $categoryToEdit->parent_id,
+        ];
+        $response = $this->put($this->updateCategoryRoute($categoryToEdit->id), $data);
+        $response->assertSessionHasErrors(['name']);
+    }
+    
+    #[Test]
     public function authenticated_user_can_not_edit_category_if_parent_id_not_exists()
     {
         $this->actingAs($this->createAdmin());
