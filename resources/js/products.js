@@ -4,11 +4,22 @@ import { handleImagePreview } from './modules/previewImage';
 import { resetForm } from './modules/productForm';
 import { showModal, hideModal } from './modules/modal';
 import { loadProducts } from './modules/productTable';
+import { attachPaginationEvents } from './modules/pagination';
 
 document.addEventListener('DOMContentLoaded', function () {
     $('.select2').select2({ placeholder: 'Chọn danh mục', width: '100%', allowClear: true });
     handleImagePreview('image', 'preview-img', 'image-placeholder');
-    loadProducts();
+    let debounceTimeout;
+    document.getElementById('search-name').addEventListener('input', function () {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(loadProducts, 300);
+    });
+    document.getElementById('price-range').addEventListener('change', function () {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(loadProducts, 300);
+    });
+    loadProducts('/products');
+    attachPaginationEvents();
 
     document.getElementById('createProductBtn').addEventListener('click', function () {
         resetForm();
@@ -20,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('image-preview').addEventListener('click', function () {
         document.getElementById('image').click();
     });
-
 
     document.getElementById('product-form').addEventListener('submit', function (e) {
         e.preventDefault();

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use App\Traits\HandleImage;
+use Illuminate\Support\Facades\Request;
 
 class ProductService
 {
@@ -76,13 +77,8 @@ class ProductService
         return $this->productRepository->getAllWithCategories();
     }
 
-    public function searchByCategoryId($categoryId)
+    public function search(array $filters, int $perPage = 5)
     {
-        return $this->productRepository->findByCategoryId($categoryId);
-    }
-
-    public function searchByPrice($minPrice, $maxPrice)
-    {
-        return $this->productRepository->searchByPrice($minPrice, $maxPrice);
+        return $this->productRepository->search($filters, $perPage);
     }
 }

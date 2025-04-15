@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Services\ProductService;
 use Exception;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -20,17 +19,22 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $products = $this->productService->getAll();
+            $filters = [
+                'keyword' => $request->input('keyword'),
+                'price_range' => $request->input('price_range')
+            ];
+            $products = $this->productService->search($filters, 5);
             $categories = Category::select('id', 'name')->get();
             if (request()->ajax()) {
                 return response()->json([
-                    'products' => $products
+                    'products' => $products->items(),
+                    'pagination' => $products->appends($filters)->links('pagination::tailwind')->toHtml()
                 ]);
             }
-            return view('products.index', compact('products', 'categories'));
+            return view('products.index', compact('products', 'categories', 'filters'));
         } catch (\Exception $e) {
             if (request()->ajax()) {
                 return response()->json([
