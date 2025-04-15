@@ -45,4 +45,9 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         ->ofParent($id)
         ->searchByName($keyword);
     }
+    public function isParent($id)
+    {
+        return Category::where('parent_id', $id)->exists();
+    }
+    
 }

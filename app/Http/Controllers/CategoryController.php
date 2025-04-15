@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
-use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -53,7 +52,7 @@ class CategoryController extends Controller
         try {
             $category = $this->categoryService->getCategoryById($id);
             $categories = $this->categoryService->getAllParentCategories();
-            $is_parent = Category::where('parent_id', $id)->exists();
+            $is_parent = $this->categoryService->isParent($id);
             return view('categories.edit', compact('category', 'categories', 'is_parent'));
         } catch (\Exception $e) {
             return redirect()->route('categories.index')->with('error', 'Không tìm thấy danh mục.');

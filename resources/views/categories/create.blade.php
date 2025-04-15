@@ -7,20 +7,21 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+            @endif
+
+              <!-- Thông báo lỗi -->
+                <div id="error-messages"></div>
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             <div class="mb-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Thêm danh mục cấp 1:') }}</h2>
 
-                    @if(session('error'))
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <span class="block sm:inline">{{ session('error') }}</span>
-                    </div>
-                    @endif
-
-                      <!-- Thông báo lỗi -->
-                        <div id="error-messages"></div>
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                    <form id="category-form" method="POST" action="{{ route('categories.store') }}" class="space-y-6">
+                  
+                    <form id="category-form1" method="POST" action="{{ route('categories.store') }}" class="space-y-6">
                         @csrf
                         <!-- Tên -->
                         <div>
@@ -72,8 +73,7 @@
                     </form>
 
                     @endif
-                    
-
+                
                 </div>
             </div>
         </div>
@@ -84,6 +84,34 @@
         const HTTP_UNPROCESSABLE_ENTITY = 422;
         $(document).ready(function() {
             $('#category-form').submit(function(e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        alert(response.message);
+                        // Nếu thành công, chuyển hướng về danh sách category
+                        window.location.href = '{{ route('categories.index') }}';
+                    },
+                    error: function(xhr) {
+                        // Xử lý lỗi (hiển thị lỗi trả về từ server)
+                        $('#error-messages').html('');
+                        if (xhr.status === HTTP_UNPROCESSABLE_ENTITY) {
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(field, messages) {
+                                $('#error-messages').append('<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert"><strong class="font-bold">Có lỗi xảy ra!</strong><ul><li>' + messages[0] + '</li></ul></div>');
+                            });
+                        }else{
+                            alert("Có lỗi xảy ra: " + xhr.responseJSON.message);
+                        }
+                    }
+                });
+            });
+            $('#category-form1').submit(function(e) {
                 e.preventDefault();
 
                 var formData = $(this).serialize();

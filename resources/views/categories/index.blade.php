@@ -23,12 +23,12 @@
                     @endif
 
                     <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-md">
-                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách Parent Category') }}</h2>
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách danh mục') }}</h2>
                         @if(Auth::user()->hasPermission('category-create'))
                         <div class="mb-6 flex justify-end">
                             <a href="{{ route('categories.create') }}" 
                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105">
-                                {{ __('➕ Thêm category mới') }}
+                                {{ __('➕ Thêm danh mục mới') }}
                             </a>
                         </div>
                         @endif
@@ -42,7 +42,7 @@
                                 <thead>
                                     <tr class="bg-blue-500 text-white">
                                         <th class="py-3 px-4 text-left">{{ __('Tên') }}</th>
-                                        <th class="py-3 px-4 text-left">{{ __('Child category') }}</th>
+                                        <th class="py-3 px-4 text-left">{{ __('Số lượng danh mục cấp 2') }}</th>
                                         <th class="py-3 px-4 text-center">{{ __('Hành động') }}</th>
                                     </tr>
                                 </thead>
@@ -55,7 +55,7 @@
                                             @if(Auth::user()->hasPermission('category-list'))
                                             <a href="{{ route('categories.show', $category->id) }}" 
                                                class="inline-flex items-center px-3 py-1 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition">
-                                               👀 Xem
+                                               📙 Xem
                                             </a>
                                         @endif
                                         
@@ -131,7 +131,7 @@
                                         @if(Auth::user()->hasPermission('category-list'))
                                             <a href="/categories/${category.id}" 
                                             class="inline-flex items-center px-3 py-1 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition">
-                                            👀 Xem
+                                            📙 Xem
                                             </a>
                                         @endif
                                         

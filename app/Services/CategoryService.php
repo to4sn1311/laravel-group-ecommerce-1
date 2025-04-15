@@ -69,4 +69,9 @@ class CategoryService
     {
         return $this->categoryRepository->searchChildCategories($keyword, $id)->paginate(self::PER_PAGE);
     }
+
+    public function isParent($id)
+    {
+        return $this->categoryRepository->isParent($id);
+    }
 }
