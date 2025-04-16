@@ -75,7 +75,7 @@ class CategoryController extends Controller
             $this->categoryService->deleteCategory($id);
             return response()->json(['message' => 'Danh mục đã được xóa thành công!']);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'Danh mục cần xóa không hợp lệ.'.$e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
 
