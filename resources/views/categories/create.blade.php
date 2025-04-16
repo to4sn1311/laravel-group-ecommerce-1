@@ -58,7 +58,6 @@
                         <div class="mb-4">
                             <label for="parent_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Parent</label>
                             <select name="parent_id" id="parent_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                <option value="null">Trống</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}">Danh mục cấp 1: {{ $category->name }}</option>
                                 @endforeach
@@ -79,66 +78,10 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script>
-        const HTTP_UNPROCESSABLE_ENTITY = 422;
-        $(document).ready(function() {
-            $('#category-form').submit(function(e) {
-                e.preventDefault();
-
-                var formData = $(this).serialize();
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        alert(response.message);
-                        // Nếu thành công, chuyển hướng về danh sách category
-                        window.location.href = '{{ route('categories.index') }}';
-                    },
-                    error: function(xhr) {
-                        // Xử lý lỗi (hiển thị lỗi trả về từ server)
-                        $('#error-messages').html('');
-                        if (xhr.status === HTTP_UNPROCESSABLE_ENTITY) {
-                            var errors = xhr.responseJSON.errors;
-                            $.each(errors, function(field, messages) {
-                                $('#error-messages').append('<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert"><strong class="font-bold">Có lỗi xảy ra!</strong><ul><li>' + messages[0] + '</li></ul></div>');
-                            });
-                        }else{
-                            alert("Có lỗi xảy ra: " + xhr.responseJSON.message);
-                        }
-                    }
-                });
-            });
-            $('#category-form1').submit(function(e) {
-                e.preventDefault();
-
-                var formData = $(this).serialize();
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        alert(response.message);
-                        // Nếu thành công, chuyển hướng về danh sách category
-                        window.location.href = '{{ route('categories.index') }}';
-                    },
-                    error: function(xhr) {
-                        // Xử lý lỗi (hiển thị lỗi trả về từ server)
-                        $('#error-messages').html('');
-                        if (xhr.status === HTTP_UNPROCESSABLE_ENTITY) {
-                            var errors = xhr.responseJSON.errors;
-                            $.each(errors, function(field, messages) {
-                                $('#error-messages').append('<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert"><strong class="font-bold">Có lỗi xảy ra!</strong><ul><li>' + messages[0] + '</li></ul></div>');
-                            });
-                        }else{
-                            alert("Có lỗi xảy ra: " + xhr.responseJSON.message);
-                        }
-                    }
-                });
-            });
-        });
+        var categoryIndexRoute = "{{ route('categories.index') }}";
     </script>
+    
+    <!-- Custom JS -->
+    <script src="{{ asset('assets/js/category/create.js') }}"></script>
 </x-app-layout>
