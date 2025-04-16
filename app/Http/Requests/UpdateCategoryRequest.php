@@ -26,7 +26,7 @@ class UpdateCategoryRequest extends FormRequest
 
         return [
             'name' => 'required|unique:categories,name,' . $id,
-            'parent_id' => ['nullable', new EditCategoryMenuLevel()],
+            'parent_id' => ['nullable', new EditCategoryMenuLevel($id)],
         ];
     }
 }

@@ -87,88 +87,15 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $(document).on("click", ".delete-category", function () {
-                let categoryId = $(this).data("id");
-                if (!confirm("Bạn có chắc muốn xóa danh mục này?")) return;
-
-                $.ajax({
-                    url: `/categories/${categoryId}`, 
-                    type: "DELETE",
-                    headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
-                    success: function (response) {
-                        alert(response.message);
-                        location.reload();
-                    },
-                    error: function (xhr) {
-                        alert("Có lỗi xảy ra: " + xhr.responseJSON.message);
-                    }
-                });
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            let debounceTimer;
-            let parentId = window.location.pathname.split("/").pop(); // Lấy ID của danh mục cha
-
-            function fetchChildCategories(url = `/categories/${parentId}/search-children`, keyword = "") {
-                $.ajax({
-                    url: url,
-                    type: "GET",
-                    data: { keyword: keyword },
-                    success: function (response) {
-                        let rows = "";
-                        response.categories.forEach(category => {
-                            rows += `
-                                <tr>
-                                    <td class="py-3 px-4">${category.name}</td>
-                                    <td class="py-3 px-4 text-center">
-                                        @if(Auth::user()->hasPermission('category-edit'))
-                                            <a href="/categories/${category.id}/edit" 
-                                                class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
-                                                ✏️ Sửa
-                                            </a>
-                                        @endif
-                                        @if(Auth::user()->hasPermission('category-delete'))
-                                            <button data-id="${category.id}"  
-                                                    class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
-                                                🗑️ Xóa
-                                            </button>
-                                        @endif
-                                    </td>
-                                </tr>
-                            `;
-                        });
-
-                        $("#child-category-list").html(rows);
-                        $("#pagination-links").html(response.pagination);
-                    },
-                    error: function () {
-                        alert("Có lỗi xảy ra khi tải dữ liệu.");
-                    }
-                });
+        const categoryData = {
+            parentId: "{{ request()->route('category') }}",
+            csrfToken: "{{ csrf_token() }}",
+            permissions: {
+                canEdit: {{ Auth::user()->hasPermission('category-edit') ? 'true' : 'false' }},
+                canDelete: {{ Auth::user()->hasPermission('category-delete') ? 'true' : 'false' }}
             }
-
-            // Lắng nghe sự kiện tìm kiếm
-            $("#search-child-category").on("input", function () {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    let keyword = $(this).val();
-                    fetchChildCategories(`/categories/${parentId}/search-children`, keyword);
-                }, 500);
-            });
-
-            // Xử lý sự kiện click vào phân trang
-            $(document).on("click", "#pagination-links a", function (e) {
-                e.preventDefault();
-                let url = $(this).attr("href");
-                let keyword = $("#search-child-category").val();
-                fetchChildCategories(url, keyword);
-            });
-
-            // Load danh sách ban đầu khi chưa tìm kiếm
-            fetchChildCategories();
-        });
+        };
     </script>
+    <!-- Import file JavaScript riêng -->
+    <script src="{{ asset('assets/js/category/show.js') }}"></script>
 </x-app-layout> 

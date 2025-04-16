@@ -26,7 +26,7 @@ class EditCategoryMenuLevel implements ValidationRule
         if ($value === 'null') {
             return;
         }
-
+        
         // N
         $is_parent = Category::where('parent_id', $this->currentId)->exists();
         // Kiểm tra nếu có parent_id
@@ -34,8 +34,14 @@ class EditCategoryMenuLevel implements ValidationRule
         if (!$parent) {
             $fail('Danh mục cha không tồn tại.');
             return;
-        } elseif ($parent->parent_id !== null||$is_parent) {
+        } elseif($is_parent){
+            $fail('Đây là danh mục cấp 1.');
+            return;
+        } elseif ($parent->parent_id !== null) {//||íparemt
             $fail('Không thể thêm danh mục cấp 3.');
+            return;
+        } else {
+            return;
         }
     }
 }
