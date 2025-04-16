@@ -20,13 +20,16 @@ class CreateCategoryMenuLevel implements ValidationRule
             return;
         }
 
-        // Kiểm tra nếu có parent_id
+        // Kiểm tra cho add child category nếu có parent_id
         $parent = Category::find($value);
         if (!$parent) {
             $fail('Danh mục cha không tồn tại.');
             return;
         } elseif ($parent->parent_id !== null) {
             $fail('Không thể thêm danh mục cấp 3.');
+            return;
+        } else{
+            return;
         }
     }
 }
