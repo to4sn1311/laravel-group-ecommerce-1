@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\CategoryMenuLevel;
+use App\Rules\EditCategoryMenuLevel;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCategoryRequest extends FormRequest
@@ -26,7 +26,7 @@ class UpdateCategoryRequest extends FormRequest
 
         return [
             'name' => 'required|unique:categories,name,' . $id,
-            'parent_id' => ['nullable', new CategoryMenuLevel()],
+            'parent_id' => ['nullable', new EditCategoryMenuLevel($id)],
         ];
     }
 }

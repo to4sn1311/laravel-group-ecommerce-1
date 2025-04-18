@@ -11,6 +11,7 @@ interface CategoryRepositoryInterface extends BaseRepositoryInterface
     public function getParentWithChildrenCount();
     public function getChildren($id);
     public function searchCategories($keyword);
-    public function searchChildCategories($keyword,$id);
+    public function searchChildCategories($keyword, $id);
+    public function isParent($id);
 
 }
