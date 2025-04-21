@@ -30,26 +30,36 @@ $(document).ready(function () {
             data: { keyword: keyword },
             success: function (response) {
                 let rows = "";
-                response.categories.forEach(category => {
-                    rows += `
+                if (response.categories.length === 0) {
+                    rows = `
                         <tr>
-                            <td class="py-3 px-4">${category.name}</td>
-                            <td class="py-3 px-4 text-center">
-                                ${categoryData.permissions.canEdit ? 
-                                    `<a href="/categories/${category.id}/edit" 
-                                        class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
-                                        ✏️ Sửa
-                                    </a>` : ''}
-                                ${categoryData.permissions.canDelete ? 
-                                    `<button data-id="${category.id}"  
-                                        class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
-                                        🗑️ Xóa
-                                    </button>` : ''}
+                            <td colspan="2" class="py-3 px-4 text-center text-gray-500 italic">
+                                Không có bản ghi nào.
                             </td>
                         </tr>
                     `;
-                });
-
+                } else {
+                    response.categories.forEach(category => {
+                        rows += `
+                            <tr>
+                                <td class="py-3 px-4">${category.name.slice(0, 30)}</td>
+                                <td class="py-3 px-4 text-center">
+                                    ${categoryData.permissions.canEdit ? 
+                                        `<a href="/categories/${category.id}/edit" 
+                                            class="inline-flex items-center px-3 py-1 ml-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition">
+                                            ✏️ Sửa
+                                        </a>` : ''}
+                                    ${categoryData.permissions.canDelete ? 
+                                        `<button data-id="${category.id}"  
+                                            class="inline-flex items-center px-3 py-1 ml-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 transition delete-category">
+                                            🗑️ Xóa
+                                        </button>` : ''}
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+    
                 $("#child-category-list").html(rows);
                 $("#pagination-links").html(response.pagination);
             },
@@ -58,6 +68,7 @@ $(document).ready(function () {
             }
         });
     }
+    
 
     // Lắng nghe sự kiện tìm kiếm
     $("#search-child-category").on("input", function () {

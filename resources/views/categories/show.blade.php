@@ -32,9 +32,9 @@
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-between">
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Tên:') }}</p>
-                                <p class="text-base font-medium text-gray-900 dark:text-gray-100">{{ $category->name }}</p>
-                            </div>                            
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Tên: ') }}</p>
+                                <p class="text-base font-medium text-gray-900 dark:text-gray-100" style="word-break: break-word;">{{ $category->name }}</p>
+                            </div>
                         </div>
                     </div>
                     <div class="mb-8">
@@ -56,7 +56,7 @@
                                     <tbody id="child-category-list">
                                         @foreach($categories as $category)
                                         <tr>
-                                            <td class="py-3 px-4">{{ $category->name }}</td>
+                                            <td class="py-3 px-4">{{ Str::limit($category->name, 30) }}</td>
                                             <td class="py-3 px-4 text-center">
                                                 @if(Auth::user()->hasPermission('category-edit'))
                                                 <a href="{{ route('categories.edit', $category->id) }}" 
