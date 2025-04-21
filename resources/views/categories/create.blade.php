@@ -16,35 +16,10 @@
               <!-- Thông báo lỗi -->
                 <div id="error-messages"></div>
                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
-            <div class="mb-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Thêm danh mục cấp 1:') }}</h2>
-
-                  
-                    <form id="category-form1" method="POST" action="{{ route('categories.store') }}" class="space-y-6">
-                        @csrf
-                        <!-- Tên -->
-                        <div>
-                            <x-input-label for="name" :value="__('Tên')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-                        </div>
-                            <select name="parent_id" id="parent_id" class="hidden mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                <option value="null">Trống</option>
-                            </select>
-                        <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('categories.index') }}" class="text-gray-500 hover:text-gray-700 font-semibold mr-4">
-                                {{ __('Hủy') }}
-                            </a>
-                            <x-primary-button>
-                                {{ __('Save') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
-                </div></div>
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100">    
                     @if($categories->isNotEmpty())
-                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Thêm danh mục cấp 2:') }}</h2>
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Thêm danh mục:') }}</h2>
 
                     <form id="category-form" method="POST" action="{{ route('categories.store') }}" class="space-y-6">
                         @csrf
@@ -56,15 +31,18 @@
 
                         <!-- Trường Danh Mục Cấp 1 -->
                         <div class="mb-4">
-                            <label for="parent_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Parent</label>
+                            <label for="parent_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Danh mục cấp 1</label>
                             <select name="parent_id" id="parent_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <option value="null">Root</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">Danh mục cấp 1: {{ $category->name }}</option>
+                                    <option value="{{ $category->id }}">{{ Str::limit($category->name, 30) }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="flex items-center justify-end mt-4">
-                        
+                            <a href="{{ route('categories.index') }}" class="text-gray-500 hover:text-gray-700 font-semibold mr-4">
+                                {{ __('Hủy') }}
+                            </a>
                             <x-primary-button>
                                 {{ __('Save') }}
                             </x-primary-button>

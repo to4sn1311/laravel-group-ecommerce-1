@@ -49,7 +49,8 @@
                                 <tbody id="category-list">
                                     @foreach($categories as $category)
                                     <tr>
-                                        <td class="py-3 px-4">{{ $category->name }}</td>
+                                        <td class="py-3 px-4">{{ Str::limit($category->name, 30) }}
+                                        </td>
                                         <td class="py-3 px-4">{{ $category->children_count }}</td>
                                         <td class="py-3 px-4 text-center">
                                             @if(Auth::user()->hasPermission('category-list'))

@@ -36,10 +36,10 @@
                         <div class="mb-4">
                             <label for="parent_id" class="block text-gray-900 dark:text-gray-100 text-sm font-bold mb-2">Danh mục cha:</label>
                             <select name="parent_id" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700">
-                                <option value="null">Trống</option>
+                                <option value="null">Root</option>
                                 @foreach($categories as $parentCategory)
                                     <option value="{{ $parentCategory->id }}" 
-                                        {{ $category->parent_id == $parentCategory->id ? 'selected' : '' }}>Danh mục cấp 1: {{ $parentCategory->name }}
+                                        {{ $category->parent_id == $parentCategory->id ? 'selected' : '' }}>{{ Str::limit($parentCategory->name, 30) }}
                                     </option>
                                 @endforeach
                             </select>
