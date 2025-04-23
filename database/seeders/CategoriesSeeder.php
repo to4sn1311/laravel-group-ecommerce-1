@@ -17,7 +17,6 @@ class CategoriesSeeder extends Seeder
           $categories = [
             ['name' => 'Áo Nam', 'parent_id' => null],
             ['name' => 'Áo Nữ', 'parent_id' => null],
-            ['name' => 'Áo Trẻ Em', 'parent_id' => null],
         ];
         foreach ($categories as $category) {
             $id = DB::table('categories')->insertGetId($category);
@@ -28,10 +27,10 @@ class CategoriesSeeder extends Seeder
                 ['name' => $category['name'] . ' Công sở', 'parent_id' => $id],
                 ['name' => $category['name'] . ' Streetwear', 'parent_id' => $id],
                 ['name' => $category['name'] . ' Hoodie & Sweater', 'parent_id' => $id],
-                ['name' => $category['name'] . ' Áo Polo', 'parent_id' => $id],
-                ['name' => $category['name'] . ' Áo Sơ mi', 'parent_id' => $id],
-                ['name' => $category['name'] . ' Áo Thun', 'parent_id' => $id],
-                ['name' => $category['name'] . ' Áo Khoác', 'parent_id' => $id],
+                ['name' => $category['name'] . ' Polo', 'parent_id' => $id],
+                ['name' => $category['name'] . ' Sơ mi', 'parent_id' => $id],
+                ['name' => $category['name'] . ' Thun', 'parent_id' => $id],
+                ['name' => $category['name'] . ' Khoác', 'parent_id' => $id],
             ]);
         }
     }
