@@ -28,7 +28,7 @@
                             <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            {{ __('Thông tin Parent Category') }}
+                            {{ __('Thông tin danh mục cấp 1') }}
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-between">
@@ -39,10 +39,10 @@
                     </div>
                     <div class="mb-8">
                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-md">
-                            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách Child Category') }}</h2>
+                            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">{{ __('Danh sách danh mục cấp 2') }}</h2>
                         
                             <div class="mb-4">
-                                <input type="text" id="search-child-category" placeholder="🔍 Nhập tên child category..."
+                                <input type="text" id="search-child-category" placeholder="🔍 Nhập tên danh mục..."
                                     class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:text-white">
                             </div>
                             <div class="overflow-x-auto">
